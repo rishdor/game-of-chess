@@ -102,4 +102,24 @@ public class Szachownica {
             return false;
         }
     }
+
+    public boolean Knight(int[] p1, int[] p2){
+        if((Math.abs(p1[0] - p2[0]) == 2 && Math.abs(p1[1] - p2[1]) == 1) || (Math.abs(p1[0] - p2[0]) == 1 && Math.abs(p1[1] - p2[1]) == 2)){
+            return !Objects.equals(IsItFriend(p1, p2), "friend");
+        }
+        else{
+            System.out.println("Out of knight's range");
+            return false;
+        }
+    }
+
+    public boolean Bishop(int[] p1, int[] p2){
+        if(Math.abs(p1[0] - p2[0]) == Math.abs(p1[1] - p2[1])){
+            return !Objects.equals(IsItFriend(p1, p2), "friend");
+        }
+        else{
+            System.out.println("Out of bishop's range");
+            return false;
+        }
+    }
 }

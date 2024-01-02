@@ -15,10 +15,18 @@ public class Main {
         int[] piece1 = GetPosition();
         int[] piece2 = GetPosition();
         System.out.println(cb.IsItFriend(piece1, piece2));
+
         if(cb.tab[piece1[0]][piece1[1]] == '\u2656' || cb.tab[piece1[0]][piece1[1]] == '\u265C'){
             if(cb.Rook(piece1, piece2)) System.out.println("Rook can move there");
             else System.out.println("Rook can't move there");
-        }else System.out.println("It's not a rook");
+        }
+        else if(cb.tab[piece1[0]][piece1[1]] == '\u2658' || cb.tab[piece1[0]][piece1[1]] == '\u265E'){
+            if(cb.Knight(piece1, piece2)) System.out.println("Knight can move there");
+            else System.out.println("Knight can't move there");
+        }else if (cb.tab[piece1[0]][piece1[1]] == '\u2657' || cb.tab[piece1[0]][piece1[1]] == '\u265D'){
+            if(cb.Bishop(piece1, piece2)) System.out.println("Bishop can move there");
+            else System.out.println("Bishop can't move there");
+        }
 
     }
     public static int[] GetPosition(){  //temporary, will be used as converter from algebraic notation to array indexes
