@@ -1,6 +1,3 @@
-import com.sun.source.doctree.IndexTree;
-
-import java.text.ParsePosition;
 import java.util.Scanner;
 
 public class Main {
@@ -23,10 +20,24 @@ public class Main {
         else if(cb.tab[piece1[0]][piece1[1]] == '\u2658' || cb.tab[piece1[0]][piece1[1]] == '\u265E'){
             if(cb.Knight(piece1, piece2)) System.out.println("Knight can move there");
             else System.out.println("Knight can't move there");
-        }else if (cb.tab[piece1[0]][piece1[1]] == '\u2657' || cb.tab[piece1[0]][piece1[1]] == '\u265D'){
+        }
+        else if (cb.tab[piece1[0]][piece1[1]] == '\u2657' || cb.tab[piece1[0]][piece1[1]] == '\u265D'){
             if(cb.Bishop(piece1, piece2)) System.out.println("Bishop can move there");
             else System.out.println("Bishop can't move there");
         }
+        else if (cb.tab[piece1[0]][piece1[1]] == '\u2655' || cb.tab[piece1[0]][piece1[1]] == '\u265B'){
+            if(cb.Queen(piece1, piece2)) System.out.println("Queen can move there");
+            else System.out.println("Queen can't move there");
+        }
+        else if (cb.tab[piece1[0]][piece1[1]] == '\u2654' || cb.tab[piece1[0]][piece1[1]] == '\u265A'){
+            if(cb.King(piece1, piece2)) System.out.println("King can move there");
+            else System.out.println("King can't move there");
+        }
+        else if (cb.tab[piece1[0]][piece1[1]] == '\u2659' || cb.tab[piece1[0]][piece1[1]] == '\u265F'){
+            if(cb.Pawn(piece1, piece2)) System.out.println("Pawn can move there");
+            else System.out.println("Pawn can't move there");
+        }
+        else System.out.println("There is no piece on this position");
 
     }
     public static int[] GetPosition(){  //temporary, will be used as converter from algebraic notation to array indexes

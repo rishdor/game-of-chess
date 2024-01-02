@@ -122,4 +122,92 @@ public class Szachownica {
             return false;
         }
     }
+
+    public boolean Queen(int[] p1, int[] p2){
+        if((Math.abs(p1[0] - p2[0]) == Math.abs(p1[1] - p2[1])) || (p1[0] == p2[0] || p1[1] == p2[1])){
+            return !Objects.equals(IsItFriend(p1, p2), "friend");
+        }
+        else{
+            System.out.println("Out of queen's range");
+            return false;
+        }
+    }
+
+    public boolean King(int[] p1, int[] p2){
+        if((Math.abs(p1[0] - p2[0]) == 1 && Math.abs(p1[1] - p2[1]) == 1) || (Math.abs(p1[0] - p2[0]) == 1 && p1[1] == p2[1]) || (Math.abs(p1[1] - p2[1]) == 1 && p1[0] == p2[0])){
+            return !Objects.equals(IsItFriend(p1, p2), "friend");
+        }
+        else{
+            System.out.println("Out of king's range");
+            return false;
+        }
+    }
+
+    public boolean Pawn(int[] p1, int[] p2){
+        if(p1[0] == p2[0] && Math.abs(p1[1] - p2[1]) == 1){
+            return !Objects.equals(IsItFriend(p1, p2), "unoccupied");
+        }
+        else if(p1[0] == p2[0] && Math.abs(p1[1] - p2[1]) == 2){
+            return Objects.equals(IsItFriend(p1, p2), "unoccupied") && Objects.equals(IsItFriend(p1, new int[]{p1[0], p1[1] + 1}), "unoccupied");
+        }
+        else if(Math.abs(p1[0] - p2[0]) == 1 && Math.abs(p1[1] - p2[1]) == 1){
+            return Objects.equals(IsItFriend(p1, p2), "enemy");
+        }
+        else{
+            System.out.println("Out of pawn's range");
+            return false;
+        }
+    }
+
+    public boolean IsItCheck(int[] p1, int[] p2){
+        if(IsItFriend(p1, p2).equals("enemy")){
+            return tab[p2[0]][p2[1]] == '\u2654' || tab[p2[0]][p2[1]] == '\u265A';
+        }
+        else return false;
+    }
+
+    public boolean IsItCheckMate(int[] p1, int[] p2){
+        if(IsItCheck(p1, p2)){
+            if(tab[p2[0]][p2[1]] == '\u2654' || tab[p2[0]][p2[1]] == '\u265A'){
+                if(King(p1, p2)){
+                    return IsItCheck(p1, p2);
+                }
+                else{
+                    System.out.println("King can't move there");
+                    return false;
+                }
+            }
+            else{
+                System.out.println("It's not a king");
+                return false;
+            }
+        }
+        else{
+            System.out.println("It's not a check");
+            return false;
+        }
+    }
+
+    public boolean IsItStaleMate(int[] p1, int[] p2){
+        if(!IsItCheck(p1, p2)){
+            if(tab[p2[0]][p2[1]] == '\u2654' || tab[p2[0]][p2[1]] == '\u265A'){
+                if(King(p1, p2)){
+                    if(IsItCheck(p1, p2)) return false;
+                    else return true;
+                }
+                else{
+                    System.out.println("King can't move there");
+                    return false;
+                }
+            }
+            else{
+                System.out.println("It's not a king");
+                return false;
+            }
+        }
+        else{
+            System.out.println("It's not a check");
+            return false;
+        }
+    }
 }
