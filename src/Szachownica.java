@@ -74,29 +74,14 @@ public class Szachownica {
             color = 'b';
         if((int) piece2 >= 9812 && (int) piece2 <= 9817){
             if(color == 'w') return true;
-            else return false;
+            else return false;  //other color or unoccupied
         }else
         if(color == 'b') return true;
-        else return false;
+        else return false;  //other color or unoccupied
     }
 
     public boolean Rook(int[] p1, int[] p2){
         if(p1[0] == p2[0] || p1[1] == p2[1]) return true;
         else return false;
     }
-
-    public int[] ParsePosition1(char piece){
-        int[] position = new int[2];
-        for(int i = 0; i<size; i++){
-            for(int j = 0; j<size; j++){
-                if(tab[i][j] == piece){
-                    position[0] = i;
-                    position[1] = j;
-                    System.out.println("Position: " + position[0] + " " + position[1]);
-                }
-            }
-        }
-        return position;
-    }
-
 }
