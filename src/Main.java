@@ -16,7 +16,7 @@ public class Main {
         int[] piece2 = GetPosition();
         System.out.println(cb.IsItFriend(cb.tab[piece1[0]][piece1[1]], cb.tab[piece2[0]][piece2[1]]));
     }
-    public static int[] GetPosition(){
+    public static int[] GetPosition(){  //temporary, will be replaced used as converter from algebraic notation to array indexes
         System.out.println("Give a position: ");
         Scanner scanner = new Scanner(System.in);
         int[] position = new int[2];

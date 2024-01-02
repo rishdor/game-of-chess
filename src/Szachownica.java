@@ -66,18 +66,24 @@ public class Szachownica {
     }
 
 
-    public boolean IsItFriend(char piece1, char piece2){
+    public String IsItFriend(char piece1, char piece2) {
+        String status = "wrong input";
         char color;
-        if((int) piece1 >= 9812 && (int) piece1 <= 9817){
-            color = 'w';
-        }else
-            color = 'b';
-        if((int) piece2 >= 9812 && (int) piece2 <= 9817){
-            if(color == 'w') return true;
-            else return false;  //other color or unoccupied
-        }else
-        if(color == 'b') return true;
-        else return false;  //other color or unoccupied
+        if ((int) piece1 >= 9812 && (int) piece1 <= 9817) color = 'w';
+        else if ((int) piece1 >= 9818 && (int) piece1 <= 9823) color = 'b';
+        else return status;  //wrong input, not a chess piece
+
+        if ((int) piece2 >= 9812 && (int) piece2 <= 9817) {   //white piece
+            if (color == 'w') status = "friend";
+            else status = "enemy";
+        }
+        else if ((int) piece2 >= 9818 && (int) piece2 <= 9823) {    //black piece
+            if (color == 'b') status = "friend";
+            else status = "enemy";
+        }
+        else status = "unoccupied";
+
+        return status;
     }
 
     public boolean Rook(int[] p1, int[] p2){
