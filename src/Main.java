@@ -15,6 +15,11 @@ public class Main {
         int[] piece1 = GetPosition();
         int[] piece2 = GetPosition();
         System.out.println(cb.IsItFriend(piece1, piece2));
+        if(cb.tab[piece1[0]][piece1[1]] == '\u2656' || cb.tab[piece1[0]][piece1[1]] == '\u265C'){
+            if(cb.Rook(piece1, piece2)) System.out.println("Rook can move there");
+            else System.out.println("Rook can't move there");
+        }else System.out.println("It's not a rook");
+
     }
     public static int[] GetPosition(){  //temporary, will be used as converter from algebraic notation to array indexes
         System.out.println("Give a position: ");

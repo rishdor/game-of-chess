@@ -1,3 +1,5 @@
+import java.util.Objects;
+
 public class Szachownica {
     public int size;
     public char[][] tab;
@@ -92,7 +94,12 @@ public class Szachownica {
         return position[0] >= 0 && position[0] <= size - 1 && position[1] >= 0 && position[1] <= size - 1;
     }
     public boolean Rook(int[] p1, int[] p2){
-        if(p1[0] == p2[0] || p1[1] == p2[1]) return true;
-        else return false;
+        if(p1[0] == p2[0] || p1[1] == p2[1]){
+            return !Objects.equals(IsItFriend(p1, p2), "friend");
+        }
+        else{
+            System.out.println("Out of rook's range");
+            return false;
+        }
     }
 }
