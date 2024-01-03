@@ -93,71 +93,7 @@ public class Chessboard {
     public boolean IsInBoardersOfCB(int[] position){
         return position[0] >= 0 && position[0] <= 8 - 1 && position[1] >= 0 && position[1] <= 8 - 1;
     }
-//    public boolean Rook(int[] p1, int[] p2){
-//        if(p1[0] == p2[0] || p1[1] == p2[1]){
-//            return !Objects.equals(IsItFriend(p1, p2), "friend");
-//        }
-//        else{
-//            System.out.println("Out of rook's range");
-//            return false;
-//        }
-//    }
-//
-//    public boolean Knight(int[] p1, int[] p2){
-//        if((Math.abs(p1[0] - p2[0]) == 2 && Math.abs(p1[1] - p2[1]) == 1) || (Math.abs(p1[0] - p2[0]) == 1 && Math.abs(p1[1] - p2[1]) == 2)){
-//            return !Objects.equals(IsItFriend(p1, p2), "friend");
-//        }
-//        else{
-//            System.out.println("Out of knight's range");
-//            return false;
-//        }
-//    }
-//
-//    public boolean Bishop(int[] p1, int[] p2){
-//        if(Math.abs(p1[0] - p2[0]) == Math.abs(p1[1] - p2[1])){
-//            return !Objects.equals(IsItFriend(p1, p2), "friend");
-//        }
-//        else{
-//            System.out.println("Out of bishop's range");
-//            return false;
-//        }
-//    }
-//
-//    public boolean Queen(int[] p1, int[] p2){
-//        if((Math.abs(p1[0] - p2[0]) == Math.abs(p1[1] - p2[1])) || (p1[0] == p2[0] || p1[1] == p2[1])){
-//            return !Objects.equals(IsItFriend(p1, p2), "friend");
-//        }
-//        else{
-//            System.out.println("Out of queen's range");
-//            return false;
-//        }
-//    }
-//
-//    public boolean King(int[] p1, int[] p2){
-//        if((Math.abs(p1[0] - p2[0]) == 1 && Math.abs(p1[1] - p2[1]) == 1) || (Math.abs(p1[0] - p2[0]) == 1 && p1[1] == p2[1]) || (Math.abs(p1[1] - p2[1]) == 1 && p1[0] == p2[0])){
-//            return !Objects.equals(IsItFriend(p1, p2), "friend");
-//        }
-//        else{
-//            System.out.println("Out of king's range");
-//            return false;
-//        }
-//    }
-//
-//    public boolean Pawn(int[] p1, int[] p2){
-//        if(p1[0] == p2[0] && Math.abs(p1[1] - p2[1]) == 1){
-//            return !Objects.equals(IsItFriend(p1, p2), "unoccupied");
-//        }
-//        else if(p1[0] == p2[0] && Math.abs(p1[1] - p2[1]) == 2){
-//            return Objects.equals(IsItFriend(p1, p2), "unoccupied") && Objects.equals(IsItFriend(p1, new int[]{p1[0], p1[1] + 1}), "unoccupied");
-//        }
-//        else if(Math.abs(p1[0] - p2[0]) == 1 && Math.abs(p1[1] - p2[1]) == 1){
-//            return Objects.equals(IsItFriend(p1, p2), "enemy");
-//        }
-//        else{
-//            System.out.println("Out of pawn's range");
-//            return false;
-//        }
-//    }
+
 
 //    public boolean IsItCheck(int[] p1, int[] p2){
 //        if(IsItFriend(p1, p2).equals("enemy")){
