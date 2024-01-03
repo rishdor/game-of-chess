@@ -48,6 +48,8 @@ class GameFlow {
             }
 
             currentPlayer = (currentPlayer == whitePlayer) ? blackPlayer : whitePlayer;
+
+
             if (isWhiteTurn) {
                 countMoves++;
                 gameRecord += countMoves + ". ";
@@ -56,6 +58,8 @@ class GameFlow {
             gameRecord += move;
             if (!isWhiteTurn) {
                 gameRecord += "\n";
+                saveGame("chessgame.txt");
+                gameRecord = "";
             }
         }
     }
