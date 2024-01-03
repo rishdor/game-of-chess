@@ -7,10 +7,10 @@ public class Main {
         System.out.println("To quit the game, type 'quit'");
         System.out.println("To restart the game, type 'restart'");
         System.out.println("To declare a draw, type 'draw'");
-        System.out.println("Give the name of the first player (w): ");
+        System.out.print("Give the name of the first player (w): ");
         Scanner scanner = new Scanner(System.in);
         String name1 = scanner.nextLine();
-        System.out.println("Give the name of the second player (b): ");
+        System.out.print("Give the name of the second player (b): ");
         String name2 = scanner.nextLine();
         Player player1 = new Player(name1, 'w');
         Player player2 = new Player(name2, 'b');

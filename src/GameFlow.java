@@ -1,30 +1,5 @@
 import java.util.Scanner;
-
-class Player {
-    private String name;
-    private char color; //w - white, b - black
-
-    public Player(String name, char color){
-        this.name = name;
-        this.color = color;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public boolean isWhite(){
-        return color == 'w';
-    }
-
-    public String getMove() {
-        Scanner scanner = new Scanner(System.in);
-        return scanner.nextLine();
-    }
-}
-
 public class GameFlow {
-
     public Chessboard board;
     public Player whitePlayer;
     public Player blackPlayer;
@@ -35,10 +10,11 @@ public class GameFlow {
         this.blackPlayer = blackPlayer;
         this.board = board;
         this.currentPlayer = whitePlayer;
+        board.FillInChessBoard();
     }
     public void start() {
         while (!isGameOver()) {
-            System.out.println(board);
+            board.PrintChessBoard();
             System.out.println("Current player: " + (currentPlayer.isWhite()? whitePlayer.getName() : blackPlayer.getName()));
 
             String move = currentPlayer.getMove();
@@ -72,5 +48,28 @@ public class GameFlow {
         dest[0] = destination.charAt(0) - 65;
         dest[1] = destination.charAt(1) - 49;
         return dest;
+    }
+}
+class Player {
+    private String name;
+    private char color; //w - white, b - black
+
+    public Player(String name, char color){
+        this.name = name;
+        this.color = color;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public boolean isWhite(){
+        return color == 'w';
+    }
+
+    public String getMove() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Your move: ");
+        return scanner.nextLine();
     }
 }
