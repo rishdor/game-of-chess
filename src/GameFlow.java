@@ -1,5 +1,5 @@
 import java.util.Scanner;
-public class GameFlow {
+class GameFlow {
     public Chessboard board;
     public Player whitePlayer;
     public Player blackPlayer;
@@ -51,8 +51,8 @@ public class GameFlow {
     }
 }
 class Player {
-    private String name;
-    private char color; //w - white, b - black
+    private final String name;
+    private final char color; //w - white, b - black
 
     public Player(String name, char color){
         this.name = name;

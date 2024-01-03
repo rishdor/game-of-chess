@@ -10,9 +10,6 @@ public abstract class Piece {
         this.unicode = unicode;
     }
     public abstract boolean canMove(int[] destination, Piece[][] board);
-    public char getUnicode() {
-        return this.unicode;
-    }
     @Override
     public String toString() {
         return String.valueOf(unicode);
@@ -24,7 +21,7 @@ public abstract class Piece {
 }
 class EmptyPiece extends Piece {
     public EmptyPiece(int[] position) {
-        super(position, false, '\u26DA');
+        super(position, false, '⛚');
     }
     @Override
     public boolean canMove(int[] destination, Piece[][] board) {
@@ -37,7 +34,7 @@ class EmptyPiece extends Piece {
 }
 class Rook extends Piece {
     public Rook(int[] position, boolean isWhite) {
-        super(position, isWhite, isWhite ? '\u2656' : '\u265C');
+        super(position, isWhite, isWhite ? '♖' : '♜');
     }
     @Override
     public boolean canMove(int[] destination, Piece[][] board) {
