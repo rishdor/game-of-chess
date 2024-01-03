@@ -84,6 +84,10 @@ class GameFlow {
                 }
             }
         }
+        if (Objects.equals(move, "restart")){
+            move = "";
+            start();
+        }
     }
     public boolean isGameOver(String move) {
         if (countMoves == 50) {
@@ -100,7 +104,7 @@ class GameFlow {
         }
         else if (Objects.equals(move, "restart")){
             System.out.println("Restarting the game.");
-            start();
+            return true;
         }
         return false;
         //TODO: implement later
