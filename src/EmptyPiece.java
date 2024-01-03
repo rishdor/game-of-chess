@@ -14,4 +14,8 @@ class EmptyPiece extends Piece {
     public String getName() {
         return name;
     }
+    @Override
+    public boolean LackOfMovement(int[] dest, Piece[][] board) {
+        return false;
+    }
 }

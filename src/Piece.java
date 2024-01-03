@@ -21,5 +21,6 @@ public abstract class Piece {
     }
     public abstract boolean getPieceType();
     public abstract String getName();
+    public abstract boolean LackOfMovement(int[] dest, Piece[][] board);
 }
 

@@ -23,10 +23,21 @@ public class Chessboard {
             for (int j = 0; j < 8; j++) {
                 board[i][j] = new EmptyPiece(new int[]{i, j});
             }
+
             board[0][0] = new Rook(new int[]{0, 0}, false);
+            board[0][7] = new Rook(new int[]{0, 7}, false);
             board[7][7] = new Rook(new int[]{7, 7}, true);
-            board[0][7] = new Rook(new int[]{0, 0}, false);
-            board[7][0] = new Rook(new int[]{7, 7}, true);
+            board[7][0] = new Rook(new int[]{7, 0}, true);
+            board[0][1] = new Knight(new int[]{0, 1}, false);
+            board[0][6] = new Knight(new int[]{0, 6}, false);
+            board[7][1] = new Knight(new int[]{7, 1}, true);
+            board[7][6] = new Knight(new int[]{7, 6}, true);
+            board[0][2] = new Bishop(new int[]{0, 2}, false);
+            board[0][5] = new Bishop(new int[]{0, 5}, false);
+            board[7][2] = new Bishop(new int[]{7, 2}, true);
+            board[7][5] = new Bishop(new int[]{7, 5}, true);
+
+
 
 
 
