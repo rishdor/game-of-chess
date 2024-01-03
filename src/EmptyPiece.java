@@ -16,6 +16,6 @@ class EmptyPiece extends Piece {
     }
     @Override
     public boolean LackOfMovement(int[] dest, Piece[][] board) {
-        return false;
+        return true;
     }
 }

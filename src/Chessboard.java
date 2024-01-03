@@ -45,41 +45,6 @@ public class Chessboard {
                 board[1][j] = new Pawn(new int[]{1, j}, false);
                 board[6][j] = new Pawn(new int[]{6, j}, true);
             }
-
-
-
-
-//            if(i == 0){ //BLACK
-//                board[i][0] = '\u265C';   //rooks
-//                board[i][7] = '\u265C';
-//                board[i][1] = '\u265E';   //knights
-//                board[i][6] = '\u265E';
-//                board[i][2] = '\u265D';   //bishops
-//                board[i][5] = '\u265D';
-//                board[i][3] = '\u265B';   // queen
-//                board[i][4] = '\u265A';   //king
-//            }
-//            if (i == 1) {   //black pawns
-//                for (int j = 0; j < 8; j++) {
-//                    board[i][j] = '\u265F';
-//                }
-//            }
-//
-//            if (i == 6) {   //white pawns
-//                for (int j = 0; j < 8; j++) {
-//                    board[i][j] = '\u2659';
-//                }
-//            }
-//            if(i == 7){ //WHITE
-//                board[i][0] = '\u2656';   //rooks
-//                board[i][7] = '\u2656';
-//                board[i][1] = '\u2658';   //knights
-//                board[i][6] = '\u2658';
-//                board[i][2] = '\u2657';   //bishops
-//                board[i][5] = '\u2657';
-//                board[i][4] = '\u2654';   //king
-//                board[i][3] = '\u2655';   //queen
-//            }
         }
     }
 
