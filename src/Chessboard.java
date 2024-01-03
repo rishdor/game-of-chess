@@ -25,6 +25,11 @@ public class Chessboard {
             }
             board[0][0] = new Rook(new int[]{0, 0}, false);
             board[7][7] = new Rook(new int[]{7, 7}, true);
+            board[0][7] = new Rook(new int[]{0, 0}, false);
+            board[7][0] = new Rook(new int[]{7, 7}, true);
+
+
+
 //            if(i == 0){ //BLACK
 //                board[i][0] = '\u265C';   //rooks
 //                board[i][7] = '\u265C';
