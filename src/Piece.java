@@ -20,6 +20,7 @@ public abstract class Piece {
         isKilled = killed;
     }
     public abstract boolean getPieceType();
+    public abstract String getName();
 }
 class EmptyPiece extends Piece {
     public EmptyPiece(int[] position) {
@@ -33,9 +34,13 @@ class EmptyPiece extends Piece {
     public boolean getPieceType() {
         return false;
     }
+    @Override
+    public String getName() {
+        return name;
+    }
 }
 class Rook extends Piece {
-    final public String name = "R";
+    final protected String name = "R";
     public Rook(int[] position, boolean isWhite) {
         super(position, isWhite, isWhite ? '♖' : '♜');
     }
@@ -72,5 +77,9 @@ class Rook extends Piece {
     @Override
     public boolean getPieceType() {
         return true;
+    }
+    @Override
+    public String getName() {
+        return name;
     }
 }

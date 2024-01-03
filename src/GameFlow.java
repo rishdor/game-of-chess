@@ -1,6 +1,10 @@
+import java.util.Objects;
 import java.util.Scanner;
 import java.io.PrintWriter;
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 class GameFlow {
     public Chessboard board;
     public Player whitePlayer;
@@ -8,7 +12,6 @@ class GameFlow {
     public Player currentPlayer;
     private String gameRecord;
     private int countMoves = 0;
-    private boolean isWhiteTurn = true;
 
     public GameFlow(Player whitePlayer, Player blackPlayer, Chessboard board) {
         this.whitePlayer = whitePlayer;
@@ -16,12 +19,14 @@ class GameFlow {
         this.board = board;
         this.currentPlayer = whitePlayer;
         this.gameRecord = "";
-        board.FillInChessBoard();
     }
+    String move = "";
     public void start() {
-        while (!isGameOver()) {
+        board.FillInChessBoard();
+        while (!isGameOver(move)) {
             board.PrintChessBoard();
             boolean capture = false;
+            boolean isWhiteTurn;
             if (currentPlayer.isWhite()) {
                 System.out.println("Current player: " + whitePlayer.getName());
                 isWhiteTurn = true;
@@ -30,40 +35,57 @@ class GameFlow {
                 isWhiteTurn = false;
             }
 
-            String move = currentPlayer.getMove();
-            int[] source = convertNotationToCoordinate(move.split(" ")[0]);
-            int[] destination = convertNotationToCoordinate(move.split(" ")[1]);
+            move = currentPlayer.getMove();
 
-            Piece piece = board.getPiece(source);
+            Pattern p = Pattern.compile("[A-H][1-8] [A-H][1-8]");
+            Matcher m = p.matcher(move);
 
-            if (piece.getPieceType() && piece.isWhite == currentPlayer.isWhite() && piece.canMove(destination, board.getBoard())) {
-                if (board.getPiece(destination) != null) {
-                    board.getPiece(destination).setKilled(true);
-                    capture = true;
+            if (m.matches()){
+                int[] source = convertNotationToCoordinate(move.split(" ")[0]);
+                int[] destination = convertNotationToCoordinate(move.split(" ")[1]);
+
+                Piece piece = board.getPiece(source);
+
+                if (piece.getPieceType() && piece.isWhite == currentPlayer.isWhite() && piece.canMove(destination, board.getBoard())) {
+                    if (board.getPiece(destination).getPieceType()) {
+                        board.getPiece(destination).setKilled(true);
+                        capture = true;
+                    }
+                    board.movePiece(source, destination);
+                } else if (!piece.getPieceType()) {
+                    System.out.println("No piece there. Try again.");
+                    continue;
                 }
-                board.movePiece(source, destination);
-            } else {
-                System.out.println("Invalid move. Try again.");
-                continue;
-            }
+                else if (piece.isWhite != currentPlayer.isWhite()) {
+                    System.out.println("That's not your piece. Try again.");
+                    continue;
+                }
+                else if (!piece.canMove(destination, board.getBoard())) {
+                    System.out.println("You can't move there. Try again.");
+                    continue;
+                }
+                else {
+                    System.out.println("Invalid move. Try again.");
+                    continue;
+                }
 
-            currentPlayer = (currentPlayer == whitePlayer) ? blackPlayer : whitePlayer;
+                currentPlayer = (currentPlayer == whitePlayer) ? blackPlayer : whitePlayer;
 
-
-            if (isWhiteTurn) {
-                countMoves++;
-                gameRecord += countMoves + ". ";
-            }
-            move = convertToAlgebraic(move, capture, piece);
-            gameRecord += move;
-            if (!isWhiteTurn) {
-                gameRecord += "\n";
-                saveGame("chessgame.txt");
-                gameRecord = "";
+                if (isWhiteTurn) {
+                    countMoves++;
+                    gameRecord += countMoves + ". ";
+                }
+                move = convertToAlgebraic(move, capture, piece);
+                gameRecord += move + " ";
+                if (!isWhiteTurn) {
+                    gameRecord += "\n";
+                    saveGame("chessgame.txt");
+                    gameRecord = "";
+                }
             }
         }
     }
-    public boolean isGameOver() {
+    public boolean isGameOver(String move) {
         return false;
         //TODO: implement later
         //check if the input is not quit or draw or restart
@@ -84,7 +106,8 @@ class GameFlow {
         String from = parts[0];
         String to = parts[1];
 
-        String pieceType = piece.name;
+        String pieceType = piece.getName();
+
         if (pieceType.equals("P")) {
             pieceType = "";
         }
