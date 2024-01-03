@@ -85,7 +85,12 @@ class GameFlow {
             pieceType = "";
         }
         if (capture) {
-            pieceType += "x";
+            if (pieceType.isEmpty()) {
+                pieceType = from.charAt(0) + "x";
+            }
+            else{
+                pieceType += "x";
+            }
         }
         return pieceType + to.toLowerCase();
     }
