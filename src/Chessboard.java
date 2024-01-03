@@ -9,13 +9,11 @@ public class Chessboard {
     public Piece getPiece(int[] position) {
         return board[position[0]][position[1]];
     }
-    public void setPiece(int[] position, Piece piece) {
-        board[position[0]][position[1]] = piece;
-    }
     public void movePiece(int[] source, int[] destination) {
         Piece piece = board[source[0]][source[1]];
         board[source[0]][source[1]] = new EmptyPiece(source);
         board[destination[0]][destination[1]] = piece;
+        piece.hasMoved = true;
     }
     public Piece[][] getBoard() {
         return this.board;

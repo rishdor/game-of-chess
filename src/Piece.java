@@ -1,7 +1,9 @@
 public abstract class Piece {
     protected int[] position;
     protected boolean isWhite;
+    protected String name;
     protected char unicode;
+    protected boolean hasMoved = false;
     protected boolean isKilled = false;
 
     public Piece(int[] position, boolean isWhite, char unicode) {
@@ -33,6 +35,7 @@ class EmptyPiece extends Piece {
     }
 }
 class Rook extends Piece {
+    final public String name = "R";
     public Rook(int[] position, boolean isWhite) {
         super(position, isWhite, isWhite ? '♖' : '♜');
     }

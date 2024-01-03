@@ -1,32 +1,45 @@
 import java.util.Scanner;
+import java.io.PrintWriter;
+import java.io.IOException;
 class GameFlow {
     public Chessboard board;
     public Player whitePlayer;
     public Player blackPlayer;
     public Player currentPlayer;
+    private String gameRecord;
+    private int countMoves = 0;
+    private boolean isWhiteTurn = true;
 
     public GameFlow(Player whitePlayer, Player blackPlayer, Chessboard board) {
         this.whitePlayer = whitePlayer;
         this.blackPlayer = blackPlayer;
         this.board = board;
         this.currentPlayer = whitePlayer;
+        this.gameRecord = "";
         board.FillInChessBoard();
     }
     public void start() {
         while (!isGameOver()) {
             board.PrintChessBoard();
-            System.out.println("Current player: " + (currentPlayer.isWhite()? whitePlayer.getName() : blackPlayer.getName()));
+            boolean capture = false;
+            if (currentPlayer.isWhite()) {
+                System.out.println("Current player: " + whitePlayer.getName());
+                isWhiteTurn = true;
+            } else {
+                System.out.println("Current player: " + blackPlayer.getName());
+                isWhiteTurn = false;
+            }
 
             String move = currentPlayer.getMove();
             int[] source = convertNotationToCoordinate(move.split(" ")[0]);
             int[] destination = convertNotationToCoordinate(move.split(" ")[1]);
+
             Piece piece = board.getPiece(source);
-            System.out.println(piece.getPieceType());
-            System.out.println(piece.isWhite == currentPlayer.isWhite());
-            System.out.println(piece.canMove(destination, board.getBoard()));
+
             if (piece.getPieceType() && piece.isWhite == currentPlayer.isWhite() && piece.canMove(destination, board.getBoard())) {
                 if (board.getPiece(destination) != null) {
                     board.getPiece(destination).setKilled(true);
+                    capture = true;
                 }
                 board.movePiece(source, destination);
             } else {
@@ -35,6 +48,15 @@ class GameFlow {
             }
 
             currentPlayer = (currentPlayer == whitePlayer) ? blackPlayer : whitePlayer;
+            if (isWhiteTurn) {
+                countMoves++;
+                gameRecord += countMoves + ". ";
+            }
+            move = convertToAlgebraic(move, capture, piece);
+            gameRecord += move;
+            if (!isWhiteTurn) {
+                gameRecord += "\n";
+            }
         }
     }
     public boolean isGameOver() {
@@ -43,6 +65,7 @@ class GameFlow {
         //check if the input is not quit or draw or restart
         //check if it's not a checkmate
         //check if it's not a stalemate
+        //saveGame("chessgame.txt");
     }
 
     public static int[] convertNotationToCoordinate(String input) {
@@ -50,6 +73,30 @@ class GameFlow {
         coordinate[1] = input.charAt(0) - 'A';
         coordinate[0] = Character.getNumericValue(input.charAt(1)) - 1;
         return coordinate;
+    }
+
+    public static String convertToAlgebraic(String move, boolean capture, Piece piece) {
+        String[] parts = move.split(" ");
+        String from = parts[0];
+        String to = parts[1];
+
+        String pieceType = piece.name;
+        if (pieceType.equals("P")) {
+            pieceType = "";
+        }
+        if (capture) {
+            pieceType += "x";
+        }
+        return pieceType + to.toLowerCase();
+    }
+
+    public void saveGame(String filename) {
+        try (PrintWriter out = new PrintWriter(filename)) {
+            out.println(gameRecord);
+        } catch (IOException e) {
+            System.out.println("An error occurred while saving the game.");
+            e.printStackTrace();
+        }
     }
 }
 
