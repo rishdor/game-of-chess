@@ -86,12 +86,26 @@ class GameFlow {
         }
     }
     public boolean isGameOver(String move) {
+        if (countMoves == 50) {
+            System.out.println("Draw by 50 moves rule.");
+            return true;
+        }
+        else if (Objects.equals(move, "quit")){
+            System.out.println("Game over.");
+            return true;
+        }
+        else if (Objects.equals(move, "draw")){
+            System.out.println("Draw.");
+            return true;
+        }
+        else if (Objects.equals(move, "restart")){
+            System.out.println("Restarting the game.");
+            start();
+        }
         return false;
         //TODO: implement later
-        //check if the input is not quit or draw or restart
         //check if it's not a checkmate
         //check if it's not a stalemate
-        //saveGame("chessgame.txt");
     }
 
     public static int[] convertNotationToCoordinate(String input) {
