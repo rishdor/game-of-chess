@@ -21,6 +21,9 @@ class GameFlow {
             int[] source = convertNotationToCoordinate(move.split(" ")[0]);
             int[] destination = convertNotationToCoordinate(move.split(" ")[1]);
             Piece piece = board.getPiece(source);
+            System.out.println(piece.getPieceType());
+            System.out.println(piece.isWhite == currentPlayer.isWhite());
+            System.out.println(piece.canMove(destination, board.getBoard()));
             if (piece.getPieceType() && piece.isWhite == currentPlayer.isWhite() && piece.canMove(destination, board.getBoard())) {
                 if (board.getPiece(destination) != null) {
                     board.getPiece(destination).setKilled(true);
@@ -44,8 +47,8 @@ class GameFlow {
 
     public static int[] convertNotationToCoordinate(String input) {
         int[] coordinate = new int[2];
-        coordinate[0] = input.charAt(0) - 'A';
-        coordinate[1] = Character.getNumericValue(input.charAt(1)) - 1;
+        coordinate[1] = input.charAt(0) - 'A';
+        coordinate[0] = Character.getNumericValue(input.charAt(1)) - 1;
         return coordinate;
     }
 }

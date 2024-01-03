@@ -40,10 +40,9 @@ class Rook extends Piece {
     public boolean canMove(int[] destination, Piece[][] board) {
         if (position[0] == destination[0] || position[1] == destination[1]) {
             if (isPathClear(destination, board)) {
-                return board[destination[0]][destination[1]] == null || board[destination[0]][destination[1]].isWhite != this.isWhite;
+                return !board[destination[0]][destination[1]].getPieceType() || board[destination[0]][destination[1]].isWhite != this.isWhite;
             }
         }
-
         return false;
     }
     public boolean isPathClear(int[] dest, Piece[][] board) {
@@ -66,6 +65,7 @@ class Rook extends Piece {
         }
         return true;
     }
+
     @Override
     public boolean getPieceType() {
         return true;
