@@ -13,9 +13,9 @@ public class Chessboard {
         board[position[0]][position[1]] = piece;
     }
     public void movePiece(int[] source, int[] destination) {
-        Piece piece = board[source[0]][source[1]];
-        board[source[0]][source[1]] = new EmptyPiece(source);
-        board[destination[0]][destination[1]] = piece;
+        Piece piece = board[source[1]][source[0]];
+        board[source[1]][source[0]] = new EmptyPiece(source);
+        board[destination[1]][destination[0]] = piece;
     }
     public Piece[][] getBoard() {
         return this.board;
@@ -23,8 +23,10 @@ public class Chessboard {
     public void FillInChessBoard(){
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                board[i][j] = new Rook(new int[]{i, j}, false);
+                board[i][j] = new EmptyPiece(new int[]{i, j});
             }
+            board[0][0] = new Rook(new int[]{0, 0}, false);
+            board[7][7] = new Rook(new int[]{7, 7}, true);
 //            if(i == 0){ //BLACK
 //                board[i][0] = '\u265C';   //rooks
 //                board[i][7] = '\u265C';

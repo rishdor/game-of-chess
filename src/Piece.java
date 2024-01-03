@@ -38,7 +38,6 @@ class Rook extends Piece {
     }
     @Override
     public boolean canMove(int[] destination, Piece[][] board) {
-
         if (position[0] == destination[0] || position[1] == destination[1]) {
             if (isPathClear(destination, board)) {
                 return board[destination[0]][destination[1]] == null || board[destination[0]][destination[1]].isWhite != this.isWhite;
@@ -52,7 +51,7 @@ class Rook extends Piece {
             int start = Math.min(position[1], dest[1]);
             int end = Math.max(position[1], dest[1]);
             for (int i = start + 1; i < end; i++) {
-                if (board[position[0]][i] != null) {
+                if (board[position[0]][i].getPieceType()) {
                     return false;
                 }
             }
@@ -60,7 +59,7 @@ class Rook extends Piece {
             int start = Math.min(position[0], dest[0]);
             int end = Math.max(position[0], dest[0]);
             for (int i = start + 1; i < end; i++) {
-                if (board[i][position[1]] != null) {
+                if (board[i][position[1]].getPieceType()) {
                     return false;
                 }
             }

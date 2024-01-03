@@ -20,7 +20,6 @@ class GameFlow {
             String move = currentPlayer.getMove();
             int[] source = convertNotationToCoordinate(move.split(" ")[0]);
             int[] destination = convertNotationToCoordinate(move.split(" ")[1]);
-
             Piece piece = board.getPiece(source);
             if (piece.getPieceType() && piece.isWhite == currentPlayer.isWhite() && piece.canMove(destination, board.getBoard())) {
                 if (board.getPiece(destination) != null) {
@@ -43,13 +42,14 @@ class GameFlow {
         //check if it's not a stalemate
     }
 
-    public static int[] convertNotationToCoordinate(String destination){
-        int[] dest = new int[2];
-        dest[0] = destination.charAt(0) - 65;
-        dest[1] = destination.charAt(1) - 49;
-        return dest;
+    public static int[] convertNotationToCoordinate(String input) {
+        int[] coordinate = new int[2];
+        coordinate[0] = input.charAt(0) - 'A';
+        coordinate[1] = Character.getNumericValue(input.charAt(1)) - 1;
+        return coordinate;
     }
 }
+
 class Player {
     private final String name;
     private final char color; //w - white, b - black
