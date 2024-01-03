@@ -36,7 +36,15 @@ public class Chessboard {
             board[0][5] = new Bishop(new int[]{0, 5}, false);
             board[7][2] = new Bishop(new int[]{7, 2}, true);
             board[7][5] = new Bishop(new int[]{7, 5}, true);
+            board[0][3] = new Queen(new int[]{0, 3}, false);
+            board[7][3] = new Queen(new int[]{7, 3}, true);
+            board[0][4] = new King(new int[]{0, 4}, false);
+            board[7][4] = new King(new int[]{7, 4}, true);
 
+            for (int j = 0; j < 8; j++) {
+                board[1][j] = new Pawn(new int[]{1, j}, false);
+                board[6][j] = new Pawn(new int[]{6, j}, true);
+            }
 
 
 
