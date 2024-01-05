@@ -11,6 +11,7 @@ public class Chessboard {
     }
     public void movePiece(int[] source, int[] destination) {
         Piece piece = board[source[0]][source[1]];
+        piece.position = destination;
         board[source[0]][source[1]] = new EmptyPiece(source);
         board[destination[0]][destination[1]] = piece;
         piece.hasMoved = true;
