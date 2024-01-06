@@ -5,7 +5,7 @@ public class King extends Piece{
     }
     @Override
     public boolean canMove(int[] destination, Piece[][] board) {
-        if((Math.abs(position[0] - destination[0]) <= 1 && Math.abs(position[1] - destination[1]) <= 1) && LackOfMovement(destination, board)){
+        if(Math.abs(position[0] - destination[0]) <= 1 && Math.abs(position[1] - destination[1]) <= 1){
             return !board[destination[0]][destination[1]].getPieceType() || board[destination[0]][destination[1]].isWhite != this.isWhite;
         }
         return false;
@@ -17,9 +17,5 @@ public class King extends Piece{
     @Override
     public String getName() {
         return name;
-    }
-    @Override
-    public boolean LackOfMovement(int[] dest, Piece[][] board) {
-        return (position[0] != dest[0] || position[1] != dest[1]);
     }
 }
