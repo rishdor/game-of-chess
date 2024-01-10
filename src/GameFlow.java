@@ -43,7 +43,6 @@ class GameFlow {
             if (m.matches()){
                 int[] source = convertNotationToCoordinate(move.split(" ")[0]);
                 int[] destination = convertNotationToCoordinate(move.split(" ")[1]);
-                //LackofMovement(int[] sorce, int[] destination) here
                 Piece piece = board.getPiece(source);
 
                 if (piece.getPieceType() && piece.isWhite == currentPlayer.isWhite() && piece.canMove(destination, board.getBoard())) {

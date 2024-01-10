@@ -1,7 +1,20 @@
 public class Pawn extends Piece{
     final protected String name = "P";
+    private boolean enPassant = false;
     public Pawn(int[] position, boolean isWhite) {
         super(position, isWhite, isWhite ? '♙' : '♟');
+    }
+    public boolean getEnPassant() {
+        return enPassant;
+    }
+    public boolean EnPassant(){
+        if (isWhite & position[0]==6){
+            enPassant = true;
+        }
+        else if (!isWhite & position[0]==1){
+            enPassant = true;
+        }
+        return enPassant;
     }
     @Override
     public boolean canMove(int[] destination, Piece[][] board) {
@@ -22,6 +35,11 @@ public class Pawn extends Piece{
                     status = !board[destination[0]][destination[1]].getPieceType();
                 } else if (position[0] - destination[0] == 1 && Math.abs(position[1] - destination[1]) == 1) { // if the pawn is moving diagonally
                     status = board[destination[0]][destination[1]].getPieceType() && !board[destination[0]][destination[1]].isWhite; // check if the square is occupied by an enemy piece
+                }
+                else if (getEnPassant()){
+                    if (position[0] == 3 && Math.abs(position[1] - destination[1]) == 1 && position[0] - destination[0] == 1) {
+                        status = EnPassant();
+                    }
                 }
             }
         } else {  //BLACK
