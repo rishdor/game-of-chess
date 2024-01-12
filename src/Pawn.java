@@ -1,20 +1,16 @@
 public class Pawn extends Piece{
     final protected String name = "P";
-    private boolean enPassant = false;
+    private boolean hasMovedTwoSquares;
+
     public Pawn(int[] position, boolean isWhite) {
         super(position, isWhite, isWhite ? '♙' : '♟');
+        this.hasMovedTwoSquares = false;
     }
-    public boolean getEnPassant() {
-        return enPassant;
+    public boolean hasMovedTwoSquares() {
+        return this.hasMovedTwoSquares;
     }
-    public boolean EnPassant(){
-        if (isWhite & position[0]==6){
-            enPassant = true;
-        }
-        else if (!isWhite & position[0]==1){
-            enPassant = true;
-        }
-        return enPassant;
+    public void setHasMovedTwoSquares(boolean hasMovedTwoSquares) {
+        this.hasMovedTwoSquares = hasMovedTwoSquares;
     }
     @Override
     public boolean canMove(int[] destination, Piece[][] board) {
@@ -23,7 +19,8 @@ public class Pawn extends Piece{
             if (position[0] == 6) {
                 if ((position[0] - destination[0] == 1 || position[0] - destination[0] == 2) && position[1] == destination[1]) {
                     if (position[0] - destination[0] == 2) {
-                        status = !board[destination[0]][destination[1]].getPieceType() && !board[destination[0] + 1][destination[1]].getPieceType(); // if the pawn is moving 2 squares, check if the square in between is empty
+                        setHasMovedTwoSquares(true);
+                        status = !board[destination[0]][destination[1]].getPieceType() && !board[destination[0] + 1][destination[1]].getPieceType(); // if the pawn is moving 2 squares, check if the square in between is empty and set has moved two true
                     } else {
                         status = !board[destination[0]][destination[1]].getPieceType(); // if the pawn is moving 1 square, check if the square is empty
                     }
@@ -35,17 +32,19 @@ public class Pawn extends Piece{
                     status = !board[destination[0]][destination[1]].getPieceType();
                 } else if (position[0] - destination[0] == 1 && Math.abs(position[1] - destination[1]) == 1) { // if the pawn is moving diagonally
                     status = board[destination[0]][destination[1]].getPieceType() && !board[destination[0]][destination[1]].isWhite; // check if the square is occupied by an enemy piece
-                }
-                else if (getEnPassant()){
-                    if (position[0] == 3 && Math.abs(position[1] - destination[1]) == 1 && position[0] - destination[0] == 1) {
-                        status = EnPassant();
+                } else if (position[0] == 4 && Math.abs(position[1] - destination[1]) == 1 && destination[0] - position[0] == -1) {
+                    if (board[position[0]][destination[1]] instanceof Pawn) {
+                        Pawn adjacentPawn = (Pawn) board[position[0]][destination[1]];
+                        status = adjacentPawn.isWhite && adjacentPawn.hasMovedTwoSquares();
                     }
                 }
             }
-        } else {  //BLACK
+        }
+        else {  //BLACK
             if (position[0] == 1) {
                 if ((destination[0] - position[0] == 1 || destination[0] - position[0] == 2) && position[1] == destination[1]) {
                     if (destination[0] - position[0] == 2) {
+                        setHasMovedTwoSquares(true);
                         status = !board[destination[0]][destination[1]].getPieceType() && !board[destination[0] - 1][destination[1]].getPieceType();
                     } else {
                         status = !board[destination[0]][destination[1]].getPieceType();
@@ -58,13 +57,17 @@ public class Pawn extends Piece{
                     status = !board[destination[0]][destination[1]].getPieceType();
                 } else if (destination[0] - position[0] == 1 && Math.abs(position[1] - destination[1]) == 1) {
                     status = board[destination[0]][destination[1]].getPieceType() && board[destination[0]][destination[1]].isWhite;
+                } else if (position[0] == 3 && Math.abs(position[1] - destination[1]) == 1 && destination[0] - position[0] == -1) {
+                    if (board[position[0]][destination[1]] instanceof Pawn) {
+                        Pawn adjacentPawn = (Pawn) board[position[0]][destination[1]];
+                        status = !adjacentPawn.isWhite && adjacentPawn.hasMovedTwoSquares();
+                    }
                 }
             }
-
         }
         return status;
-    }
 
+    }
     @Override
     public boolean getPieceType() {
         return true;

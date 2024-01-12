@@ -38,7 +38,9 @@ class GameFlow {
             move = currentPlayer.getMove();
 
             Pattern p = Pattern.compile("[A-H][1-8] [A-H][1-8]");
+            Pattern ep = Pattern.compile("[A-H][1-8] [A-H][1-8] ep");
             Matcher m = p.matcher(move);
+            Matcher epm = ep.matcher(move);
 
             if (m.matches()){
                 int[] source = convertNotationToCoordinate(move.split(" ")[0]);
@@ -81,6 +83,71 @@ class GameFlow {
                     saveGame("chessgame.txt");
                     gameRecord = "";
                 }
+            }
+            else if (epm.matches()){
+                int[] source = convertNotationToCoordinate(move.split(" ")[0]);
+                int[] destination = convertNotationToCoordinate(move.split(" ")[1]);
+
+                Piece piece = board.getPiece(source);
+                int[] enemyDestination = piece.isWhite ? new int[]{destination[0] - 1, destination[1]} : new int[]{destination[0] + 1, destination[1]};
+                System.out.println(piece.canMove(destination, board.getBoard()));
+
+                if (piece.getPieceType() && piece.isWhite == currentPlayer.isWhite() && piece.canMove(destination, board.getBoard())) {
+                    if (board.getPiece(enemyDestination).getPieceType()) {
+                        board.getPiece(enemyDestination).setKilled(true);
+                        capture = true;
+                    }
+                    board.movePiece(source, destination);
+                    board.setEmptyPiece(enemyDestination);
+//                    if (piece instanceof Pawn && Math.abs(destination[1] - source[1]) == 2) {
+//                        ((Pawn) board.getPiece(destination)).setHasMovedTwoSquares(true);
+//                    }
+                } else if (!piece.getPieceType()) {
+                    System.out.println("No piece there. Try again.");
+                    continue;
+                }
+                else if (piece.isWhite != currentPlayer.isWhite()) {
+                    System.out.println("That's not your piece. Try again.");
+                    continue;
+                }
+                else if (!piece.canMove(destination, board.getBoard())) {
+                    System.out.println("You can't move there. Try again.");
+                    continue;
+                }
+                else {
+                    System.out.println("Invalid move. Try again.");
+                    continue;
+                }
+
+                currentPlayer = (currentPlayer == whitePlayer) ? blackPlayer : whitePlayer;
+
+                if (isWhiteTurn) {
+                    countMoves++;
+                    gameRecord += countMoves + ". ";
+                }
+                move = convertToAlgebraic(move, capture, piece);
+                gameRecord += move + " ";
+                if (!isWhiteTurn) {
+                    gameRecord += "\n";
+                    saveGame("chessgame.txt");
+                    gameRecord = "";
+                }
+            }
+            else if (Objects.equals(move, "quit")){
+                move = "";
+                isGameOver(move);
+            }
+            else if (Objects.equals(move, "draw")){
+                move = "";
+                isGameOver(move);
+            }
+            else if (Objects.equals(move, "restart")){
+                move = "";
+                isGameOver(move);
+            }
+            else {
+                System.out.println("Invalid move. Try again.");
+                continue;
             }
         }
         if (Objects.equals(move, "restart")){
