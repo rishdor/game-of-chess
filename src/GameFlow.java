@@ -21,6 +21,7 @@ class GameFlow {
         this.gameRecord = "";
     }
     String move = "";
+    String previousMove = "";
     public void start() {
         board.FillInChessBoard();
         while (!isGameOver(move)) {
@@ -43,8 +44,8 @@ class GameFlow {
             Matcher epm = ep.matcher(move);
 
             if (m.matches()){
-                int[] source = convertNotationToCoordinate(move.split(" ")[0]);
-                int[] destination = convertNotationToCoordinate(move.split(" ")[1]);
+                int[] source = Move.convertNotationToCoordinate(move.split(" ")[0]);
+                int[] destination = Move.convertNotationToCoordinate(move.split(" ")[1]);
                 Piece piece = board.getPiece(source);
 
                 if (piece.getPieceType() && piece.isWhite == currentPlayer.isWhite() && piece.canMove(destination, board.getBoard())) {
@@ -76,7 +77,7 @@ class GameFlow {
                     countMoves++;
                     gameRecord += countMoves + ". ";
                 }
-                move = convertToAlgebraic(move, capture, piece);
+                move = Move.convertToAlgebraic(move, capture, piece);
                 gameRecord += move + " ";
                 if (!isWhiteTurn) {
                     gameRecord += "\n";
@@ -85,8 +86,8 @@ class GameFlow {
                 }
             }
             else if (epm.matches()){
-                int[] source = convertNotationToCoordinate(move.split(" ")[0]);
-                int[] destination = convertNotationToCoordinate(move.split(" ")[1]);
+                int[] source = Move.convertNotationToCoordinate(move.split(" ")[0]);
+                int[] destination = Move.convertNotationToCoordinate(move.split(" ")[1]);
 
                 Piece piece = board.getPiece(source);
                 int[] enemyDestination = piece.isWhite ? new int[]{destination[0] - 1, destination[1]} : new int[]{destination[0] + 1, destination[1]};
@@ -125,7 +126,7 @@ class GameFlow {
                     countMoves++;
                     gameRecord += countMoves + ". ";
                 }
-                move = convertToAlgebraic(move, capture, piece);
+                move = Move.convertToAlgebraic(move, capture, piece);
                 gameRecord += move + " ";
                 if (!isWhiteTurn) {
                     gameRecord += "\n";
@@ -177,43 +178,6 @@ class GameFlow {
         //check if it's not a checkmate
         //check if it's not a stalemate
     }
-
-    public static int[] convertNotationToCoordinate(String input) {
-        int[] coordinate = new int[2];
-        coordinate[1] = input.charAt(0) - 'A';
-        coordinate[0] = Character.getNumericValue(input.charAt(1)) - 1;
-        return coordinate;
-    }
-
-    public static String convertToAlgebraic(String move, boolean capture, Piece piece, boolean check, boolean checkmate, boolean promotion, char promotionPiece) {
-        String[] parts = move.split(" ");
-        String from = parts[0];
-        String to = parts[1];
-
-        String pieceType = piece.getName();
-
-        if (pieceType.equals("P")) {
-            pieceType = "";
-        }
-        if (capture) {
-            if (pieceType.isEmpty()) {
-                pieceType = from.charAt(0) + "x";
-            } else {
-                pieceType += "x";
-            }
-        }
-        if (promotion) {
-            to = to + "=" + Character.toUpperCase(promotionPiece);
-        }
-        if (check) {
-            to += "+";
-        }
-        if (checkmate) {
-            to += "#";
-        }
-        return pieceType + to.toLowerCase();
-    }
-
     public void saveGame(String filename) {
         try (PrintWriter out = new PrintWriter(filename)) {
             out.println(gameRecord);
