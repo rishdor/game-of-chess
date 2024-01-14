@@ -185,7 +185,7 @@ class GameFlow {
         return coordinate;
     }
 
-    public static String convertToAlgebraic(String move, boolean capture, Piece piece) {
+    public static String convertToAlgebraic(String move, boolean capture, Piece piece, boolean check, boolean checkmate, boolean promotion, char promotionPiece) {
         String[] parts = move.split(" ");
         String from = parts[0];
         String to = parts[1];
@@ -198,10 +198,18 @@ class GameFlow {
         if (capture) {
             if (pieceType.isEmpty()) {
                 pieceType = from.charAt(0) + "x";
-            }
-            else{
+            } else {
                 pieceType += "x";
             }
+        }
+        if (promotion) {
+            to = to + "=" + Character.toUpperCase(promotionPiece);
+        }
+        if (check) {
+            to += "+";
+        }
+        if (checkmate) {
+            to += "#";
         }
         return pieceType + to.toLowerCase();
     }
