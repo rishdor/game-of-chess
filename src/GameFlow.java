@@ -20,11 +20,11 @@ class GameFlow {
         this.currentPlayer = whitePlayer;
         this.gameRecord = "";
     }
-    String move = "";
-    String previousMove = "";
+    Command command;
+    Command previousCommand;
     public void start() {
         board.FillInChessBoard();
-        while (!isGameOver(move)) {
+        while (!command.endTheGame()) {
             board.PrintChessBoard();
             boolean capture = false;
             boolean isWhiteTurn;
@@ -36,155 +36,28 @@ class GameFlow {
                 isWhiteTurn = false;
             }
 
-            move = currentPlayer.getMove();
+            command = currentPlayer.getCommand(board);
 
-            Pattern p = Pattern.compile("[A-H][1-8] [A-H][1-8]");
-            Pattern ep = Pattern.compile("[A-H][1-8] [A-H][1-8] ep");
-            Matcher m = p.matcher(move);
-            Matcher epm = ep.matcher(move);
-
-            if (m.matches()){
-                int[] source = Move.convertNotationToCoordinate(move.split(" ")[0]);
-                int[] destination = Move.convertNotationToCoordinate(move.split(" ")[1]);
-                Piece piece = board.getPiece(source);
-
-                if (piece.getPieceType() && piece.isWhite == currentPlayer.isWhite() && piece.canMove(destination, board.getBoard())) {
-                    if (board.getPiece(destination).getPieceType()) {
-                        board.getPiece(destination).setKilled(true);
-                        capture = true;
-                    }
-                    board.movePiece(source, destination);
-                } else if (!piece.getPieceType()) {
-                    System.out.println("No piece there. Try again.");
-                    continue;
-                }
-                else if (piece.isWhite != currentPlayer.isWhite()) {
-                    System.out.println("That's not your piece. Try again.");
-                    continue;
-                }
-                else if (!piece.canMove(destination, board.getBoard())) {
-                    System.out.println("You can't move there. Try again.");
-                    continue;
-                }
-                else {
-                    System.out.println("Invalid move. Try again.");
-                    continue;
-                }
-
-                currentPlayer = (currentPlayer == whitePlayer) ? blackPlayer : whitePlayer;
-
-                if (isWhiteTurn) {
-                    countMoves++;
-                    gameRecord += countMoves + ". ";
-                }
-                move = Move.convertToAlgebraic(move, capture, piece);
-                gameRecord += move + " ";
-                if (!isWhiteTurn) {
-                    gameRecord += "\n";
-                    saveGame("chessgame.txt");
-                    gameRecord = "";
-                }
-            }
-            else if (epm.matches()){
-                int[] source = Move.convertNotationToCoordinate(move.split(" ")[0]);
-                int[] destination = Move.convertNotationToCoordinate(move.split(" ")[1]);
-
-                Piece piece = board.getPiece(source);
-                int[] enemyDestination = piece.isWhite ? new int[]{destination[0] - 1, destination[1]} : new int[]{destination[0] + 1, destination[1]};
-                System.out.println(piece.canMove(destination, board.getBoard()));
-
-                if (piece.getPieceType() && piece.isWhite == currentPlayer.isWhite() && piece.canMove(destination, board.getBoard())) {
-                    if (board.getPiece(enemyDestination).getPieceType()) {
-                        board.getPiece(enemyDestination).setKilled(true);
-                        capture = true;
-                    }
-                    board.movePiece(source, destination);
-                    board.setEmptyPiece(enemyDestination);
-//                    if (piece instanceof Pawn && Math.abs(destination[1] - source[1]) == 2) {
-//                        ((Pawn) board.getPiece(destination)).setHasMovedTwoSquares(true);
-//                    }
-                } else if (!piece.getPieceType()) {
-                    System.out.println("No piece there. Try again.");
-                    continue;
-                }
-                else if (piece.isWhite != currentPlayer.isWhite()) {
-                    System.out.println("That's not your piece. Try again.");
-                    continue;
-                }
-                else if (!piece.canMove(destination, board.getBoard())) {
-                    System.out.println("You can't move there. Try again.");
-                    continue;
-                }
-                else {
-                    System.out.println("Invalid move. Try again.");
-                    continue;
-                }
-
-                currentPlayer = (currentPlayer == whitePlayer) ? blackPlayer : whitePlayer;
-
-                if (isWhiteTurn) {
-                    countMoves++;
-                    gameRecord += countMoves + ". ";
-                }
-                move = Move.convertToAlgebraic(move, capture, piece);
-                gameRecord += move + " ";
-                if (!isWhiteTurn) {
-                    gameRecord += "\n";
-                    saveGame("chessgame.txt");
-                    gameRecord = "";
-                }
-            }
-            else if (Objects.equals(move, "quit")){
-                move = "";
-                isGameOver(move);
-            }
-            else if (Objects.equals(move, "draw")){
-                move = "";
-                isGameOver(move);
-            }
-            else if (Objects.equals(move, "restart")){
-                move = "";
-                isGameOver(move);
-            }
-            else {
-                System.out.println("Invalid move. Try again.");
-                continue;
-            }
-        }
-        if (Objects.equals(move, "restart")){
-            move = "";
-            start();
         }
     }
-    public boolean isGameOver(String move) {
-        if (countMoves == 50) {
-            System.out.println("Draw by 50 moves rule.");
-            return true;
-        }
-        else if (Objects.equals(move, "quit")){
-            System.out.println("Game over.");
-            return true;
-        }
-        else if (Objects.equals(move, "draw")){
-            System.out.println("Draw.");
-            return true;
-        }
-        else if (Objects.equals(move, "restart")){
-            System.out.println("Restarting the game.");
-            return true;
-        }
-        return false;
-        //TODO: implement later
-        //check if it's not a checkmate
-        //check if it's not a stalemate
-    }
-    public void saveGame(String filename) {
-        try (PrintWriter out = new PrintWriter(filename)) {
-            out.println(gameRecord);
-        } catch (IOException e) {
-            System.out.println("An error occurred while saving the game.");
-            e.printStackTrace();
-        }
-    }
+//    public boolean isGameOver (Command command){
+//        if (countMoves == 50) {
+//            System.out.println("Draw by 50 moves rule.");
+//            return true;
+//        } else if (command instanceof QuitCommand) {
+//            System.out.println("Game over.");
+//            return true;
+//        } else if (command instanceof DrawCommand) {
+//            System.out.println("Draw.");
+//            return true;
+//        } else if (command instanceof RestartCommand) {
+//            System.out.println("Restarting the game.");
+//            return true;
+//        }
+//        return false;
+//        //TODO: implement later
+//        //check if it's not a checkmate
+//        //check if it's not a stalemate
+//    }
 }
 

@@ -1,23 +1,38 @@
-public class Move {
+public class Move extends Command {
     private final Piece piece;
-    private final int[] source;
-    private final int[] destination;
     private final String move;
-    private final boolean capture;
-    private final boolean check;
-    private final boolean checkmate;
-    private final boolean promotion;
-    private final char promotionPiece;
+    private int[] source;
+    private int[] destination;
+    private boolean capture;
+    private boolean check;
+    private boolean checkmate;
+    private boolean promotion;
+    private char promotionPiece;
 
-    public Move(Piece piece, String move, String move1, boolean capture, boolean check, boolean checkmate, boolean promotion, char promotionPiece) {
-        this.piece = piece;
-        this.source =  convertNotationToCoordinate(move.split(" ")[0]);
-        this.destination = convertNotationToCoordinate(move.split(" ")[1]);
+    public Move(String move, Chessboard board) {
         this.move = move;
+        this.source = convertNotationToCoordinate(move.split(" ")[0]);
+        this.destination = convertNotationToCoordinate(move.split(" ")[1]);
+        this.piece = board.getPiece(source);
+    }
+
+    public void setCapture(boolean capture) {
         this.capture = capture;
+    }
+
+    public void setCheck(boolean check) {
         this.check = check;
+    }
+
+    public void setCheckmate(boolean checkmate) {
         this.checkmate = checkmate;
+    }
+
+    public void setPromotion(boolean promotion) {
         this.promotion = promotion;
+    }
+
+    public void setPromotionPiece(char promotionPiece) {
         this.promotionPiece = promotionPiece;
     }
 
@@ -87,5 +102,10 @@ public class Move {
             to += "#";
         }
         return pieceType + to.toLowerCase();
+    }
+
+    @Override
+    public boolean endTheGame() {
+        return false;
     }
 }
