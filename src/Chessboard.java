@@ -47,7 +47,13 @@ public class Chessboard {
         king.hasMoved = true;
         rook.hasMoved = true;
     }
-
+    public void enPassant(int [] source, int [] destination, int[] pawn2Position) {
+        Piece pawn = board[source[0]][source[1]];
+        pawn.position = destination;
+        board[destination[0]][destination[1]] = pawn;
+        board[source[0]][source[1]] = new EmptyPiece(source);
+        board[pawn2Position[0]][pawn2Position[1]] = new EmptyPiece(source);
+    }
     public Piece[][] getBoard() {
         return this.board;
     }

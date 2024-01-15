@@ -71,12 +71,11 @@ class GameFlow {
                     }
                 } else if (piece instanceof King king && piece.isWhite == currentPlayer.isWhite() && king.canCastle(destination, board)) { //check if it's a castling
                     board.castle(source, destination);
-                }else if (piece instanceof Pawn pawn && piece.isWhite == currentPlayer.isWhite()) {
+                }else if (piece instanceof Pawn pawn && piece.isWhite == currentPlayer.isWhite()) { //check if its en passant
                     if (previousCommand instanceof Move previousMove && previousMove.getPiece().getName().equals("P")) {
                         Pawn piece2 = (Pawn)previousMove.getPiece();
                         if (piece2.hasMovedTwoSquares() && pawn.canEnPassant(piece2, destination, board)) {
-                            board.movePiece(source, destination);
-                            board.createNewPiece(' ', false, destination);;
+                            board.enPassant(source,destination, pawn.position);
                         }
                     }
                 }else if (!piece.getPieceType()) {
