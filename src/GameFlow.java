@@ -1,6 +1,5 @@
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.Scanner;
+import java.io.FileWriter;
+import java.util.*;
 import java.io.PrintWriter;
 import java.io.IOException;
 import java.util.regex.Matcher;
@@ -12,6 +11,7 @@ class GameFlow {
     public Player blackPlayer;
     public Player currentPlayer;
     //    private String gameRecord;
+    private List<String> moves = new ArrayList<>();
     private int countMoves = 0;
 
     public GameFlow(Player whitePlayer, Player blackPlayer, Chessboard board) {
@@ -22,14 +22,14 @@ class GameFlow {
     }
 
     Command command;
-    Command previousCommand;
+    Move previousMove;
 
     public void start() {
         board.FillInChessBoard();
         currentPlayer = whitePlayer;
         countMoves = 0;
         command = null;
-        previousCommand = null;
+        previousMove = null;
         while (!isGameOver(command)) {
             board.PrintChessBoard();
             boolean isWhiteTurn;
@@ -47,7 +47,7 @@ class GameFlow {
                 int[] destination = move.getDestination();
 
                 if (piece.getPieceType() && piece.isWhite == currentPlayer.isWhite() && piece.canMove(destination, board.getBoard())) {
-                    if (board.getPiece(destination).getPieceType()) { //check if there is a piece on the destination and sets caoture to true
+                    if (board.getPiece(destination).getPieceType()) { //check if there is a piece on the destination and sets capture to true
                         board.getPiece(destination).setKilled(true);
                         move.setCapture(true);
                         board.movePiece(source, destination);
@@ -66,15 +66,17 @@ class GameFlow {
                         move.setPromotionPiece(Character.toUpperCase(input.charAt(0)));
                         board.createNewPiece(input.charAt(0), piece.isWhite, destination);
                         board.createNewPiece(' ', false, source);
+                        move.setPromotion(true);
+                        move.setPromotionPiece(input.charAt(0));
                     }
                     else{ //if it's not a pawn promotion and there is no piece on the destination
                         board.movePiece(source, destination);
                     }
                 } else if (piece instanceof King king && piece.isWhite == currentPlayer.isWhite() && king.canCastle(destination, board)) { //check if it's a castling
                     board.castle(source, destination);
+                    move.setIfCastling(true);
                 }else if (piece instanceof Pawn pawn && piece.isWhite == currentPlayer.isWhite()) { //check if its en passant
-                    System.out.println(Arrays.toString(source) + " " + Arrays.toString(destination) + " " + Arrays.toString(pawn.position));
-                    if (previousCommand instanceof Move previousMove && previousMove.getPiece().getName().equals("P")) {
+                    if (previousMove != null && previousMove.getPiece().getName().equals("P")) {
                         Pawn piece2 = (Pawn)previousMove.getPiece();
                         if (piece2.hasMovedTwoSquares() && pawn.canEnPassant(piece2, destination, board)) {
                             board.enPassant(source,destination, piece2.position);
@@ -94,11 +96,14 @@ class GameFlow {
                     continue;
                 }
                 currentPlayer = (currentPlayer == whitePlayer) ? blackPlayer : whitePlayer;
-                previousCommand = command;
 
-                if (isWhiteTurn) {
+                if (!isWhiteTurn) {
+                    String algebraicMove = countMoves + 1 + ". "+ previousMove.convertToAlgebraic() + " " + move.convertToAlgebraic();
+                    moves.add(algebraicMove);
                     countMoves++;
                 }
+
+                previousMove = move;
 
             } else if (command == null){
                 System.out.println("Invalid move. Try again.");
@@ -109,6 +114,15 @@ class GameFlow {
             else {
                 command.endTheGame();
             }
+        }
+        System.out.println("Do you want to save the game? (y/n)");
+        Scanner scanner = new Scanner(System.in);
+        String input = scanner.nextLine();
+        if (Objects.equals(input, "y")) {
+            saveGame();
+        }
+        else {
+            System.out.println("Game not saved.");
         }
     }
     public boolean isGameOver(Command command){
@@ -122,6 +136,15 @@ class GameFlow {
         //TODO: implement later
         //check if it's not a checkmate
         // check if it's not a stalemate
+    }
+    public void saveGame() {
+        String gameData = String.join("\n", moves);
+        try (FileWriter writer = new FileWriter("game.txt")) {
+            writer.write(gameData);
+        } catch (IOException e) {
+            System.out.println("An error occurred while saving the game.");
+            e.printStackTrace();
+        }
     }
 }
 
