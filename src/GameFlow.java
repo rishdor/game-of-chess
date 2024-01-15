@@ -31,7 +31,6 @@ class GameFlow {
         previousCommand = null;
         while (!isGameOver(command)) {
             board.PrintChessBoard();
-            boolean capture = false;
             boolean isWhiteTurn;
             if (currentPlayer.isWhite()) {
                 System.out.println("Current player: " + whitePlayer.getName());
@@ -41,9 +40,8 @@ class GameFlow {
                 isWhiteTurn = false;
             }
             command = currentPlayer.getCommand(board);
-            if (command instanceof Move) {
+            if (command instanceof Move move) {
                 previousCommand = command;
-                Move move = (Move) command;
                 Piece piece = move.getPiece();
                 int[] source = move.getSource();
                 int[] destination = move.getDestination();
@@ -51,9 +49,27 @@ class GameFlow {
                 if (piece.getPieceType() && piece.isWhite == currentPlayer.isWhite() && piece.canMove(destination, board.getBoard())) {
                     if (board.getPiece(destination).getPieceType()) {
                         board.getPiece(destination).setKilled(true);
-                        capture = true;
+                        move.setCapture(true);
+                        board.movePiece(source, destination);
                     }
-                    board.movePiece(source, destination);
+                    else if (piece.getName().equals("P") && (destination[0] == 0 || destination[0] == 7)) {
+                        move.setPromotion(true);
+                        Scanner scanner = new Scanner(System.in);
+                        String input = "";
+                        Pattern p = Pattern.compile("[qrbnQRBN]");
+                        Matcher m = p.matcher(input);
+                        while (!m.matches()) {
+                            System.out.print("Promote to (Q/R/B/N): ");
+                            input = scanner.nextLine();
+                            m = p.matcher(input);
+                        }
+                        move.setPromotionPiece(Character.toUpperCase(input.charAt(0)));
+                        board.createNewPiece(input.charAt(0), piece.isWhite, destination);
+                        board.createNewPiece(' ', piece.isWhite, source);
+                    }
+                    else{
+                        board.movePiece(source, destination);
+                    }
                 } else if (!piece.getPieceType()) {
                     System.out.println("No piece there. Try again.");
                     continue;

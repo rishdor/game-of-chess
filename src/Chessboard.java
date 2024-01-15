@@ -16,8 +16,27 @@ public class Chessboard {
         board[destination[0]][destination[1]] = piece;
         piece.hasMoved = true;
     }
-    public void setEmptyPiece(int[] position) {
-        board[position[0]][position[1]] = new EmptyPiece(position);
+    public void setPiece(int[] position, Piece piece) {
+        board[position[0]][position[1]] = piece;
+    }
+    public void createNewPiece(char name, boolean isWhite, int[] position) {
+        switch (name) {
+            case 'R', 'r':
+                board[position[0]][position[1]] = new Rook(position, isWhite);
+                break;
+            case 'N', 'n':
+                board[position[0]][position[1]] = new Knight(position, isWhite);
+                break;
+            case 'B', 'b':
+                board[position[0]][position[1]] = new Bishop(position, isWhite);
+                break;
+            case 'Q', 'q':
+                board[position[0]][position[1]] = new Queen(position, isWhite);
+                break;
+            default:
+                board[position[0]][position[1]] = new EmptyPiece(position);
+                break;
+        }
     }
     public Piece[][] getBoard() {
         return this.board;
