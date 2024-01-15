@@ -4,7 +4,7 @@ public class Main {
     public static void main(String[] args) {
         System.out.println("Welcome to the chess game!");
         System.out.println("To move a piece, type the position of the piece and the position you want to move it to (e.g. A2 A4)");
-        System.out.println("To do castling, type the position of the king and the position of the rook (e.g. E1 C1)");
+        System.out.println("To do castling, type the position of the king and the position of the rook (e.g. E1 H1)");
         System.out.println("To quit the game, type 'quit'");
         System.out.println("To restart the game, type 'restart'");
         System.out.println("To declare a draw, type 'draw'");
