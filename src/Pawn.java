@@ -1,3 +1,4 @@
+import java.util.Arrays;
 public class Pawn extends Piece{
     final protected String name = "P";
     private boolean hasMovedTwoSquares;
@@ -105,6 +106,7 @@ public class Pawn extends Piece{
             if (position[0] == 1) {
                 if ((destination[0] - position[0] == 1 || destination[0] - position[0] == 2) && position[1] == destination[1]) {
                     if (destination[0] - position[0] == 2) {
+                        setHasMovedTwoSquares(true);
                         return !board[destination[0]][destination[1]].getPieceType() && !board[destination[0] - 1][destination[1]].getPieceType();
                     } else {
                         return !board[destination[0]][destination[1]].getPieceType();
@@ -123,25 +125,40 @@ public class Pawn extends Piece{
         return false;
     }
     public boolean canEnPassant(Pawn pawn, int[] destination, Chessboard board) {
-        if (pawn.isWhite && pawn.position[0] == 3 && this.position[0] == 3) {
+        System.out.println("Pawn is white: " + pawn.isWhite);
+        System.out.println("Pawn position: " + Arrays.toString(pawn.position));
+        System.out.println("Destination: " + Arrays.toString(destination));
+
+        if (pawn.isWhite && pawn.position[0] == 4 && this.position[0] == 4) {
+            System.out.println("Inside white pawn condition");
             if (!board.getPiece(destination).getPieceType()) {
+                System.out.println("Destination is empty");
                 if (pawn.position[1] == this.position[1] + 1 || pawn.position[1] == this.position[1] - 1) {
-                    if (pawn.position[1] == destination[1] && destination[0]==pawn.position[0]-1){
-                        return true;
-                    }
-                }
-            }
-        }if (!pawn.isWhite && pawn.position[0] == 4 && this.position[0] == 4) {
-            if (!board.getPiece(destination).getPieceType()) {
-                if (pawn.position[1] == this.position[1] + 1 || pawn.position[1] == this.position[1] - 1) {
+                    System.out.println("Pawn is adjacent");
                     if (pawn.position[1] == destination[1] && destination[0]==pawn.position[0]+1){
+                        System.out.println("En passant condition met for white pawn");
                         return true;
                     }
                 }
             }
         }
+        if (!pawn.isWhite && pawn.position[0] == 3 && this.position[0] == 3) {
+            System.out.println("Inside black pawn condition");
+            if (!board.getPiece(destination).getPieceType()) {
+                System.out.println("Destination is empty");
+                if (pawn.position[1] == this.position[1] + 1 || pawn.position[1] == this.position[1] - 1) {
+                    System.out.println("Pawn is adjacent");
+                    if (pawn.position[1] == destination[1] && destination[0]==pawn.position[0]-1){
+                        System.out.println("En passant condition met for black pawn");
+                        return true;
+                    }
+                }
+            }
+        }
+        System.out.println("En passant condition not met");
         return false;
     }
+
 
     @Override
     public boolean getPieceType() {

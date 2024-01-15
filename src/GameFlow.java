@@ -1,3 +1,4 @@
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.Scanner;
 import java.io.PrintWriter;
@@ -72,10 +73,15 @@ class GameFlow {
                 } else if (piece instanceof King king && piece.isWhite == currentPlayer.isWhite() && king.canCastle(destination, board)) { //check if it's a castling
                     board.castle(source, destination);
                 }else if (piece instanceof Pawn pawn && piece.isWhite == currentPlayer.isWhite()) { //check if its en passant
+                    System.out.println(Arrays.toString(source) + " " + Arrays.toString(destination) + " " + Arrays.toString(pawn.position));
                     if (previousCommand instanceof Move previousMove && previousMove.getPiece().getName().equals("P")) {
                         Pawn piece2 = (Pawn)previousMove.getPiece();
-                        if (piece2.hasMovedTwoSquares() && pawn.canEnPassant(piece2, destination, board)) {
-                            board.enPassant(source,destination, pawn.position);
+                        System.out.println(Arrays.toString(source) + " " + Arrays.toString(destination) + " " + Arrays.toString(piece2.position));
+                        System.out.println(piece2.hasMovedTwoSquares());
+                        System.out.println(pawn.canEnPassant(piece2,destination,board));
+                        if (piece2.hasMovedTwoSquares() && pawn.canEnPassant(piece2, destination, board)) { //FIXME: the problem is in the canEnPassant method
+                            System.out.println(Arrays.toString(source) + " " + Arrays.toString(destination) + " " + Arrays.toString(piece2.position));
+                            board.enPassant(source,destination, piece2.position);
                         }
                     }
                 }else if (!piece.getPieceType()) {
