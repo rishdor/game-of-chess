@@ -1,8 +1,8 @@
 public class Move extends Command {
     private final Piece piece;
     private final String move;
-    private int[] source;
-    private int[] destination;
+    private final int[] source;
+    private final int[] destination;
     private boolean capture;
     private boolean check;
     private boolean checkmate;
@@ -46,26 +46,6 @@ public class Move extends Command {
 
     public int[] getDestination() {
         return destination;
-    }
-
-    public boolean isCapture() {
-        return capture;
-    }
-
-    public boolean isCheck() {
-        return check;
-    }
-
-    public boolean isCheckmate() {
-        return checkmate;
-    }
-
-    public boolean isPromotion() {
-        return promotion;
-    }
-
-    public char getPromotionPiece() {
-        return promotionPiece;
     }
 
     public static int[] convertNotationToCoordinate(String input) {
