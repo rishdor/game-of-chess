@@ -76,11 +76,7 @@ class GameFlow {
                     System.out.println(Arrays.toString(source) + " " + Arrays.toString(destination) + " " + Arrays.toString(pawn.position));
                     if (previousCommand instanceof Move previousMove && previousMove.getPiece().getName().equals("P")) {
                         Pawn piece2 = (Pawn)previousMove.getPiece();
-                        System.out.println(Arrays.toString(source) + " " + Arrays.toString(destination) + " " + Arrays.toString(piece2.position));
-                        System.out.println(piece2.hasMovedTwoSquares());
-                        System.out.println(pawn.canEnPassant(piece2,destination,board));
-                        if (piece2.hasMovedTwoSquares() && pawn.canEnPassant(piece2, destination, board)) { //FIXME: the problem is in the canEnPassant method
-                            System.out.println(Arrays.toString(source) + " " + Arrays.toString(destination) + " " + Arrays.toString(piece2.position));
+                        if (piece2.hasMovedTwoSquares() && pawn.canEnPassant(piece2, destination, board)) {
                             board.enPassant(source,destination, piece2.position);
                         }
                     }
