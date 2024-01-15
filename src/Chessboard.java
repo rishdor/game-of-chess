@@ -16,9 +16,6 @@ public class Chessboard {
         board[destination[0]][destination[1]] = piece;
         piece.hasMoved = true;
     }
-    public void setPiece(int[] position, Piece piece) {
-        board[position[0]][position[1]] = piece;
-    }
     public void createNewPiece(char name, boolean isWhite, int[] position) {
         switch (name) {
             case 'R', 'r':

@@ -70,7 +70,16 @@ class GameFlow {
                     else{
                         board.movePiece(source, destination);
                     }
-                } else if (!piece.getPieceType()) {
+                } else if (piece instanceof King king && piece.isWhite == currentPlayer.isWhite() && king.canCastle(destination, board)) {
+                    if (destination[1] == 6) {
+                        board.movePiece(source, destination);
+                        board.movePiece(new int[]{source[0], 7}, new int[]{source[0], 5});
+                    } else if (destination[1] == 2) {
+                        board.movePiece(source, destination);
+                        board.movePiece(new int[]{source[0], 0}, new int[]{source[0], 3});
+                    }
+                }
+                else if (!piece.getPieceType()) {
                     System.out.println("No piece there. Try again.");
                     continue;
                 } else if (piece.isWhite != currentPlayer.isWhite()) {

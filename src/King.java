@@ -18,4 +18,21 @@ public class King extends Piece{
     public String getName() {
         return name;
     }
+    public boolean canCastle(int[] destination, Chessboard board) {
+        if (this.hasMoved) {
+            return false;
+        }
+        Piece piece = board.getPiece(destination);
+        if (getPieceType() && piece.getName().equals("R") && !piece.hasMoved && piece.isWhite == this.isWhite){
+            int start = Math.min(this.position[1], destination[1]);
+            int end = Math.max(this.position[1], destination[1]);
+            for (int i = start + 1; i < end; i++) {
+                if (board.getPiece(new int[]{this.position[0], i}).getPieceType()) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
 }
