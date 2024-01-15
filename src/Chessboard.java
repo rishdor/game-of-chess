@@ -35,6 +35,19 @@ public class Chessboard {
                 break;
         }
     }
+    public void castle(int [] source, int [] destination){
+        Piece king = board[source[0]][source[1]];
+        Piece rook = board[destination[0]][destination[1]];
+        king.position = new int[] {destination[0], destination[1]-1};
+        rook.position = new int[] {source[0], source[1]+1};
+        board[source[0]][source[1]+1] = rook;
+        board[destination[0]][destination[1]-1] = king;
+        board[source[0]][source[1]] = new EmptyPiece(source);
+        board[destination[0]][destination[1]] = new EmptyPiece(source);
+        king.hasMoved = true;
+        rook.hasMoved = true;
+    }
+
     public Piece[][] getBoard() {
         return this.board;
     }

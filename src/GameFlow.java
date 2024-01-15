@@ -70,13 +70,7 @@ class GameFlow {
                         board.movePiece(source, destination);
                     }
                 } else if (piece instanceof King king && piece.isWhite == currentPlayer.isWhite() && king.canCastle(destination, board)) { //check if it's a castling
-                    if (destination[1] == 6) {
-                        board.movePiece(source, destination);
-                        board.movePiece(new int[]{source[0], 7}, new int[]{source[0], 5});
-                    } else if (destination[1] == 2) {
-                        board.movePiece(source, destination);
-                        board.movePiece(new int[]{source[0], 0}, new int[]{source[0], 3});
-                    }
+                    board.castle(source, destination);
                 }else if (piece instanceof Pawn pawn && piece.isWhite == currentPlayer.isWhite()) {
                     if (previousCommand instanceof Move previousMove && previousMove.getPiece().getName().equals("P")) {
                         Pawn piece2 = (Pawn)previousMove.getPiece();
