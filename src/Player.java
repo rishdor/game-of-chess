@@ -24,7 +24,7 @@ class Player {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Your move: ");
         String input = scanner.nextLine();
-        Pattern p = Pattern.compile("[A-H][1-8] [A-H][1-8]");
+        Pattern p = Pattern.compile("[a-hA-H][1-8] [a-hA-H][1-8]");
         Matcher m = p.matcher(input);
 
         if (m.matches()) {
