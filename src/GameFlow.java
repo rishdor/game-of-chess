@@ -41,18 +41,17 @@ class GameFlow {
             }
             command = currentPlayer.getCommand(board);
             if (command instanceof Move move) {
-                previousCommand = command;
                 Piece piece = move.getPiece();
                 int[] source = move.getSource();
                 int[] destination = move.getDestination();
 
                 if (piece.getPieceType() && piece.isWhite == currentPlayer.isWhite() && piece.canMove(destination, board.getBoard())) {
-                    if (board.getPiece(destination).getPieceType()) {
+                    if (board.getPiece(destination).getPieceType()) { //check if there is a piece on the destination and sets caoture to true
                         board.getPiece(destination).setKilled(true);
                         move.setCapture(true);
                         board.movePiece(source, destination);
                     }
-                    else if (piece.getName().equals("P") && (destination[0] == 0 || destination[0] == 7)) {
+                    else if (piece.getName().equals("P") && (destination[0] == 0 || destination[0] == 7)) { //check if it's a pawn promotion
                         move.setPromotion(true);
                         Scanner scanner = new Scanner(System.in);
                         String input = "";
@@ -65,12 +64,12 @@ class GameFlow {
                         }
                         move.setPromotionPiece(Character.toUpperCase(input.charAt(0)));
                         board.createNewPiece(input.charAt(0), piece.isWhite, destination);
-                        board.createNewPiece(' ', piece.isWhite, source);
+                        board.createNewPiece(' ', false, source);
                     }
-                    else{
+                    else{ //if it's not a pawn promotion and there is no piece on the destination
                         board.movePiece(source, destination);
                     }
-                } else if (piece instanceof King king && piece.isWhite == currentPlayer.isWhite() && king.canCastle(destination, board)) {
+                } else if (piece instanceof King king && piece.isWhite == currentPlayer.isWhite() && king.canCastle(destination, board)) { //check if it's a castling
                     if (destination[1] == 6) {
                         board.movePiece(source, destination);
                         board.movePiece(new int[]{source[0], 7}, new int[]{source[0], 5});
@@ -78,8 +77,15 @@ class GameFlow {
                         board.movePiece(source, destination);
                         board.movePiece(new int[]{source[0], 0}, new int[]{source[0], 3});
                     }
-                }
-                else if (!piece.getPieceType()) {
+                }else if (piece instanceof Pawn pawn && piece.isWhite == currentPlayer.isWhite()) {
+                    if (previousCommand instanceof Move previousMove && previousMove.getPiece().getName().equals("P")) {
+                        Pawn piece2 = (Pawn)previousMove.getPiece();
+                        if (piece2.hasMovedTwoSquares() && pawn.canEnPassant(piece2, destination, board)) {
+                            board.movePiece(source, destination);
+                            board.createNewPiece(' ', false, destination);;
+                        }
+                    }
+                }else if (!piece.getPieceType()) {
                     System.out.println("No piece there. Try again.");
                     continue;
                 } else if (piece.isWhite != currentPlayer.isWhite()) {
@@ -93,12 +99,15 @@ class GameFlow {
                     continue;
                 }
                 currentPlayer = (currentPlayer == whitePlayer) ? blackPlayer : whitePlayer;
+                previousCommand = command;
+
                 if (isWhiteTurn) {
                     countMoves++;
                 }
+
             } else if (command == null){
                 System.out.println("Invalid move. Try again.");
-            } else if (command instanceof RestartCommand) {
+            } else if (command instanceof RestartCommand) { //restart the game
                 command.endTheGame();
                 start();
             }
