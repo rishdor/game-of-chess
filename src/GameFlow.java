@@ -100,14 +100,12 @@ class GameFlow {
 
                 if(board.isCheck(currentPlayer.isWhite())) {//check if current move removed check
                     //"undo" the move -> revert the board
-                    //board = checkBoard;
+                    board = (Chessboard) checkBoard.clone();
                     System.out.println("Check remains. Try again.");
-                    System.out.println(checkCounter);
                     continue;
                 }
                 else{
                     checkCounter = 0;
-                    System.out.println(checkCounter);
                 }
 
                 currentPlayer = (currentPlayer == whitePlayer) ? blackPlayer : whitePlayer;
@@ -138,11 +136,8 @@ class GameFlow {
         }
         else if (board.isCheck(currentPlayer.isWhite())) {
             if (checkCounter == 0){
-                //checkBoard.clone(board);
-                checkBoard = board;
+                checkBoard = (Chessboard) board.clone();
             }
-            System.out.println("\nCHECKBOARD  "+ checkCounter +"\n");
-            checkBoard.PrintChessBoard();
             System.out.println("Check.");
             checkCounter++;
             return false;
