@@ -1,6 +1,6 @@
 import java.util.Objects;
 
-public class Chessboard {
+public class Chessboard implements Cloneable{
     public Piece[][] board;
 
     public Chessboard() {
@@ -183,7 +183,17 @@ public class Chessboard {
         return true;
     }
 
-    public void clone(Chessboard board) {
-
+    @Override
+    public Chessboard clone() {
+        try {
+            Chessboard clone = (Chessboard) super.clone();
+            clone.board = new Piece[8][8];
+            for (int i = 0; i < 8; i++) {
+                System.arraycopy(this.board[i], 0, clone.board[i], 0, 8);
+            }
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
     }
 }

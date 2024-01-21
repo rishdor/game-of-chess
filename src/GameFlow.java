@@ -1,5 +1,6 @@
-import java.io.FileWriter;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Objects;
+import java.util.Scanner;
 import java.io.PrintWriter;
 import java.io.IOException;
 import java.util.regex.Matcher;
@@ -7,12 +8,13 @@ import java.util.regex.Pattern;
 
 class GameFlow {
     public Chessboard board;
+    public Chessboard checkBoard; //loaded when move did not remove check
     public Player whitePlayer;
     public Player blackPlayer;
     public Player currentPlayer;
     //    private String gameRecord;
-    private List<String> moves = new ArrayList<>();
     private int countMoves = 0;
+    public int checkCounter = 0;    //first time the player is in check, the board is saved, so the board can be reverted, if the player does not remove check
 
     public GameFlow(Player whitePlayer, Player blackPlayer, Chessboard board) {
         this.whitePlayer = whitePlayer;
@@ -22,14 +24,14 @@ class GameFlow {
     }
 
     Command command;
-    Move previousMove;
+    Command previousCommand;
 
     public void start() {
         board.FillInChessBoard();
         currentPlayer = whitePlayer;
         countMoves = 0;
         command = null;
-        previousMove = null;
+        previousCommand = null;
         while (!isGameOver(command)) {
             board.PrintChessBoard();
             boolean isWhiteTurn;
@@ -47,12 +49,14 @@ class GameFlow {
                 int[] destination = move.getDestination();
 
                 if (piece.getPieceType() && piece.isWhite == currentPlayer.isWhite() && piece.canMove(destination, board.getBoard())) {
-                    if (board.getPiece(destination).getPieceType()) { //check if there is a piece on the destination and sets capture to true
+                    if (board.getPiece(destination).getPieceType() && !board.getPiece(destination).getName().equals("K") ) { //check if there is a piece on the destination and sets capture to true
                         board.getPiece(destination).setKilled(true);
                         move.setCapture(true);
                         board.movePiece(source, destination);
-                    }
-                    else if (piece.getName().equals("P") && (destination[0] == 0 || destination[0] == 7)) { //check if it's a pawn promotion
+                    } else if (board.getPiece(destination).getName().equals("K")) {
+                        System.out.println("You can't capture the king. Try again.");
+                        continue;
+                    } else if (piece.getName().equals("P") && (destination[0] == 0 || destination[0] == 7)) { //check if it's a pawn promotion
                         move.setPromotion(true);
                         Scanner scanner = new Scanner(System.in);
                         String input = "";
@@ -66,23 +70,21 @@ class GameFlow {
                         move.setPromotionPiece(Character.toUpperCase(input.charAt(0)));
                         board.createNewPiece(input.charAt(0), piece.isWhite, destination);
                         board.createNewPiece(' ', false, source);
-                        move.setPromotion(true);
-                        move.setPromotionPiece(input.charAt(0));
                     }
                     else{ //if it's not a pawn promotion and there is no piece on the destination
                         board.movePiece(source, destination);
                     }
                 } else if (piece instanceof King king && piece.isWhite == currentPlayer.isWhite() && king.canCastle(destination, board)) { //check if it's a castling
                     board.castle(source, destination);
-                    move.setIfCastling(true);
                 }else if (piece instanceof Pawn pawn && piece.isWhite == currentPlayer.isWhite()) { //check if its en passant
-                    if (previousMove != null && previousMove.getPiece().getName().equals("P")) {
+                    System.out.println(Arrays.toString(source) + " " + Arrays.toString(destination) + " " + Arrays.toString(pawn.position));
+                    if (previousCommand instanceof Move previousMove && previousMove.getPiece().getName().equals("P")) {
                         Pawn piece2 = (Pawn)previousMove.getPiece();
                         if (piece2.hasMovedTwoSquares() && pawn.canEnPassant(piece2, destination, board)) {
                             board.enPassant(source,destination, piece2.position);
                         }
                     }
-                }else if (!piece.getPieceType()) {
+                } else if (!piece.getPieceType()) {
                     System.out.println("No piece there. Try again.");
                     continue;
                 } else if (piece.isWhite != currentPlayer.isWhite()) {
@@ -95,15 +97,23 @@ class GameFlow {
                     System.out.println("Invalid move. Try again.");
                     continue;
                 }
-                currentPlayer = (currentPlayer == whitePlayer) ? blackPlayer : whitePlayer;
 
-                if (!isWhiteTurn) {
-                    String algebraicMove = countMoves + 1 + ". "+ previousMove.convertToAlgebraic() + " " + move.convertToAlgebraic();
-                    moves.add(algebraicMove);
-                    countMoves++;
+                if(board.isCheck(currentPlayer.isWhite())) {//check if current move removed check
+                    //"undo" the move -> revert the board
+                    board = (Chessboard) checkBoard.clone();
+                    System.out.println("Check remains. Try again.");
+                    continue;
+                }
+                else{
+                    checkCounter = 0;
                 }
 
-                previousMove = move;
+                currentPlayer = (currentPlayer == whitePlayer) ? blackPlayer : whitePlayer;
+                previousCommand = command;
+
+                if (isWhiteTurn) {
+                    countMoves++;
+                }
 
             } else if (command == null){
                 System.out.println("Invalid move. Try again.");
@@ -115,36 +125,37 @@ class GameFlow {
                 command.endTheGame();
             }
         }
-        System.out.println("Do you want to save the game? (y/n)");
-        Scanner scanner = new Scanner(System.in);
-        String input = scanner.nextLine();
-        if (Objects.equals(input, "y")) {
-            saveGame();
-        }
-        else {
-            System.out.println("Game not saved.");
-        }
     }
     public boolean isGameOver(Command command){
         if (countMoves == 50) {
             System.out.println("Draw by 50 moves rule.");
             return true;
-        } else if (command instanceof QuitCommand || command instanceof DrawCommand || command instanceof RestartCommand) {
+        }
+        else if(command instanceof QuitCommand || command instanceof DrawCommand || command instanceof RestartCommand) {
             return true;
         }
-        return false;
-        //TODO: implement later
-        //check if it's not a checkmate
-        // check if it's not a stalemate
-    }
-    public void saveGame() {
-        String gameData = String.join("\n", moves);
-        try (FileWriter writer = new FileWriter("game.txt")) {
-            writer.write(gameData);
-        } catch (IOException e) {
-            System.out.println("An error occurred while saving the game.");
-            e.printStackTrace();
+        else if (board.isCheck(currentPlayer.isWhite())) {
+            if (checkCounter == 0){
+                checkBoard = (Chessboard) board.clone();
+            }
+            System.out.println("Check.");
+            checkCounter++;
+            return false;
+
+            /*
         }
+
+        else if (board.isCheckmate(currentPlayer.isWhite())) {
+            System.out.println("Checkmate. " + currentPlayer.getName() + " wins!");
+            return true;
+            */
+            /*
+        } else if (board.isStalemate(currentPlayer.isWhite())) {
+            System.out.println("Stalemate.");
+            return true;
+*/
+        }else
+            return false;
     }
 }
 
