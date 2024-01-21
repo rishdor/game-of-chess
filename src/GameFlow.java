@@ -8,11 +8,13 @@ import java.util.regex.Pattern;
 
 class GameFlow {
     public Chessboard board;
+    public Chessboard checkBoard; //loaded when move did not remove check
     public Player whitePlayer;
     public Player blackPlayer;
     public Player currentPlayer;
     //    private String gameRecord;
     private int countMoves = 0;
+    public int checkCounter = 0;    //first time the player is in check, the board is saved, so the board can be reverted, if the player does not remove check
 
     public GameFlow(Player whitePlayer, Player blackPlayer, Chessboard board) {
         this.whitePlayer = whitePlayer;
@@ -47,12 +49,14 @@ class GameFlow {
                 int[] destination = move.getDestination();
 
                 if (piece.getPieceType() && piece.isWhite == currentPlayer.isWhite() && piece.canMove(destination, board.getBoard())) {
-                    if (board.getPiece(destination).getPieceType()) { //check if there is a piece on the destination and sets caoture to true
+                    if (board.getPiece(destination).getPieceType() && !board.getPiece(destination).getName().equals("K") ) { //check if there is a piece on the destination and sets capture to true
                         board.getPiece(destination).setKilled(true);
                         move.setCapture(true);
                         board.movePiece(source, destination);
-                    }
-                    else if (piece.getName().equals("P") && (destination[0] == 0 || destination[0] == 7)) { //check if it's a pawn promotion
+                    } else if (board.getPiece(destination).getName().equals("K")) {
+                        System.out.println("You can't capture the king. Try again.");
+                        continue;
+                    } else if (piece.getName().equals("P") && (destination[0] == 0 || destination[0] == 7)) { //check if it's a pawn promotion
                         move.setPromotion(true);
                         Scanner scanner = new Scanner(System.in);
                         String input = "";
@@ -80,7 +84,7 @@ class GameFlow {
                             board.enPassant(source,destination, piece2.position);
                         }
                     }
-                }else if (!piece.getPieceType()) {
+                } else if (!piece.getPieceType()) {
                     System.out.println("No piece there. Try again.");
                     continue;
                 } else if (piece.isWhite != currentPlayer.isWhite()) {
@@ -93,6 +97,19 @@ class GameFlow {
                     System.out.println("Invalid move. Try again.");
                     continue;
                 }
+
+                if(board.isCheck(currentPlayer.isWhite())) {//check if current move removed check
+                    //"undo" the move -> revert the board
+                    //board = checkBoard;
+                    System.out.println("Check remains. Try again.");
+                    System.out.println(checkCounter);
+                    continue;
+                }
+                else{
+                    checkCounter = 0;
+                    System.out.println(checkCounter);
+                }
+
                 currentPlayer = (currentPlayer == whitePlayer) ? blackPlayer : whitePlayer;
                 previousCommand = command;
 
@@ -115,13 +132,35 @@ class GameFlow {
         if (countMoves == 50) {
             System.out.println("Draw by 50 moves rule.");
             return true;
-        } else if (command instanceof QuitCommand || command instanceof DrawCommand || command instanceof RestartCommand) {
+        }
+        else if(command instanceof QuitCommand || command instanceof DrawCommand || command instanceof RestartCommand) {
             return true;
         }
-        return false;
-        //TODO: implement later
-        //check if it's not a checkmate
-        // check if it's not a stalemate
+        else if (board.isCheck(currentPlayer.isWhite())) {
+            if (checkCounter == 0){
+                //checkBoard.clone(board);
+                checkBoard = board;
+            }
+            System.out.println("\nCHECKBOARD  "+ checkCounter +"\n");
+            checkBoard.PrintChessBoard();
+            System.out.println("Check.");
+            checkCounter++;
+            return false;
+
+            /*
+        }
+
+        else if (board.isCheckmate(currentPlayer.isWhite())) {
+            System.out.println("Checkmate. " + currentPlayer.getName() + " wins!");
+            return true;
+            */
+            /*
+        } else if (board.isStalemate(currentPlayer.isWhite())) {
+            System.out.println("Stalemate.");
+            return true;
+*/
+        }else
+            return false;
     }
 }
 

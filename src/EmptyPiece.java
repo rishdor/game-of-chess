@@ -1,4 +1,5 @@
 class EmptyPiece extends Piece {
+    final protected String name = "E";
     public EmptyPiece(int[] position) {
         super(position, false, '⛚');
     }
