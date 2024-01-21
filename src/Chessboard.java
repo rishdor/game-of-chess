@@ -3,12 +3,14 @@ import java.util.Objects;
 public class Chessboard {
     public Piece[][] board;
 
-    public Chessboard(){
+    public Chessboard() {
         board = new Piece[8][8];
     }
+
     public Piece getPiece(int[] position) {
         return board[position[0]][position[1]];
     }
+
     public void movePiece(int[] source, int[] destination) {
         Piece piece = board[source[0]][source[1]];
         piece.position = destination;
@@ -16,6 +18,7 @@ public class Chessboard {
         board[destination[0]][destination[1]] = piece;
         piece.hasMoved = true;
     }
+
     public void createNewPiece(char name, boolean isWhite, int[] position) {
         switch (name) {
             case 'R', 'r':
@@ -35,29 +38,33 @@ public class Chessboard {
                 break;
         }
     }
-    public void castle(int [] source, int [] destination){
+
+    public void castle(int[] source, int[] destination) {
         Piece king = board[source[0]][source[1]];
         Piece rook = board[destination[0]][destination[1]];
-        king.position = new int[] {destination[0], destination[1]-1};
-        rook.position = new int[] {source[0], source[1]+1};
-        board[source[0]][source[1]+1] = rook;
-        board[destination[0]][destination[1]-1] = king;
+        king.position = new int[]{destination[0], destination[1] - 1};
+        rook.position = new int[]{source[0], source[1] + 1};
+        board[source[0]][source[1] + 1] = rook;
+        board[destination[0]][destination[1] - 1] = king;
         board[source[0]][source[1]] = new EmptyPiece(source);
         board[destination[0]][destination[1]] = new EmptyPiece(source);
         king.hasMoved = true;
         rook.hasMoved = true;
     }
-    public void enPassant(int [] source, int [] destination, int[] pawn2Position) {
+
+    public void enPassant(int[] source, int[] destination, int[] pawn2Position) {
         Piece pawn = board[source[0]][source[1]];
         pawn.position = destination;
         board[destination[0]][destination[1]] = pawn;
         board[source[0]][source[1]] = new EmptyPiece(source);
         board[pawn2Position[0]][pawn2Position[1]] = new EmptyPiece(source);
     }
+
     public Piece[][] getBoard() {
         return this.board;
     }
-    public void FillInChessBoard(){
+
+    public void FillInChessBoard() {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 board[i][j] = new EmptyPiece(new int[]{i, j});
@@ -87,102 +94,96 @@ public class Chessboard {
         }
     }
 
-    public void PrintChessBoard(){
+    public void PrintChessBoard() {
         System.out.print("  ");
-        for(int i = 0; i< 8; i++){   //makes the letters above the chess board
-            int firstRow = 65+i;
+        for (int i = 0; i < 8; i++) {   //makes the letters above the chess board
+            int firstRow = 65 + i;
             System.out.print((char) firstRow + " ");
 
-            if((i+1)%3 != 0) System.out.print(" ");
+            if ((i + 1) % 3 != 0) System.out.print(" ");
         }
         System.out.println();
 
-        for(int i = 0; i<8; i++){
-            System.out.print(i+1 +" ");
-            for(int j = 0; j<8; j++) { //prints what's inside of chess board
+        for (int i = 0; i < 8; i++) {
+            System.out.print(i + 1 + " ");
+            for (int j = 0; j < 8; j++) { //prints what's inside of chess board
                 System.out.print(board[i][j] + " ");
             }
             System.out.println();
         }
     }
 
-
-//    public String IsItFriend(int[]p1, int[] p2) {
-//        String status = "wrong input";
-//        if(!IsInBoardersOfCB(p1) || !IsInBoardersOfCB(p2)) return status;
-//        else {
-//            char piece1 = board[p1[0]][p1[1]];
-//            char piece2 = board[p2[0]][p2[1]];
-//            char color;
-//            if ((int) piece1 >= 9812 && (int) piece1 <= 9817) color = 'w';
-//            else if ((int) piece1 >= 9818 && (int) piece1 <= 9823) color = 'b';
-//            else return status;  //wrong input, not a chess piece
-//
-//            if ((int) piece2 >= 9812 && (int) piece2 <= 9817) {   //white piece
-//                if (color == 'w') status = "friend";
-//                else status = "enemy";
-//            } else if ((int) piece2 >= 9818 && (int) piece2 <= 9823) {    //black piece
-//                if (color == 'b') status = "friend";
-//                else status = "enemy";
-//            } else status = "unoccupied";
-//        }
-//        return status;
-//    }
-
-    public boolean IsInBoardersOfCB(int[] position){
+    public boolean IsInBoardersOfCB(int[] position) {
         return position[0] >= 0 && position[0] <= 8 - 1 && position[1] >= 0 && position[1] <= 8 - 1;
     }
 
+    public boolean isCheck(boolean white) {
+        int[] kingPosition = new int[2];
+        for (int i = 0; i < 8; i++) { //finds the king
+            for (int j = 0; j < 8; j++) {
+                if (board[i][j].getName().equals("K") && board[i][j].isWhite == white) {
+                    kingPosition[0] = i;
+                    kingPosition[1] = j;
+                }
+            }
+        }
+        for (int i = 0; i < 8; i++) { //checks if there is a piece that can kill the king
+            for (int j = 0; j < 8; j++) {
+                if (board[i][j].getPieceType() && board[i][j].isWhite != white) {
+                    if (board[i][j].canMove(kingPosition, board)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
 
-//    public boolean IsItCheck(int[] p1, int[] p2){
-//        if(IsItFriend(p1, p2).equals("enemy")){
-//            return board[p2[0]][p2[1]] == '\u2654' || board[p2[0]][p2[1]] == '\u265A';
-//        }
-//        else return false;
-//    }
+    public boolean isCheckmate(boolean white){
+        int[] kingPosition = new int[2];
+        for (int i = 0; i < 8; i++) { //finds the king
+            for (int j = 0; j < 8; j++) {
+                if (board[i][j].getName().equals("K") && board[i][j].isWhite == white) {
+                    kingPosition[0] = i;
+                    kingPosition[1] = j;
+                }
+            }
+        }
+        for (int i = kingPosition[0] - 1; i <= kingPosition[0] + 1; i++) { //checks if there is a piece that can kill the king
+            for (int j = kingPosition[1] - 1; j <= kingPosition[1] + 1; j++) {
+                if (IsInBoardersOfCB(new int[]{i, j}) && board[i][j].getPieceType() && board[i][j].isWhite != white) {
+                    if (board[i][j].canMove(kingPosition, board)) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
 
-//    public boolean IsItCheckMate(int[] p1, int[] p2){
-//        if(IsItCheck(p1, p2)){
-//            if(board[p2[0]][p2[1]] == '\u2654' || board[p2[0]][p2[1]] == '\u265A'){
-//                if(King(p1, p2)){
-//                    return IsItCheck(p1, p2);
-//                }
-//                else{
-//                    System.out.println("King can't move there");
-//                    return false;
-//                }
-//            }
-//            else{
-//                System.out.println("It's not a king");
-//                return false;
-//            }
-//        }
-//        else{
-//            System.out.println("It's not a check");
-//            return false;
-//        }
-//    }
+    public boolean isStalemate(boolean white) {
+        int[] kingPosition = new int[2];
+        for (int i = 0; i < 8; i++) { //finds the king
+            for (int j = 0; j < 8; j++) {
+                if (board[i][j].getName().equals("K") && board[i][j].isWhite == white) {
+                    kingPosition[0] = i;
+                    kingPosition[1] = j;
+                }
+            }
+        }
+        for (int i = 0; i < 8; i++) { //checks if there is a piece that can kill the king
+            for (int j = 0; j < 8; j++) {
+                if (board[i][j].getPieceType() && board[i][j].isWhite != white) {
+                    if (board[i][j].canMove(kingPosition, board)) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
 
-//    public boolean IsItStaleMate(int[] p1, int[] p2){
-//        if(!IsItCheck(p1, p2)){
-//            if(board[p2[0]][p2[1]] == '\u2654' || board[p2[0]][p2[1]] == '\u265A'){
-//                if(King(p1, p2)){
-//                    if(IsItCheck(p1, p2)) return false;
-//                    else return true;
-//                }
-//                else{
-//                    System.out.println("King can't move there");
-//                    return false;
-//                }
-//            }
-//            else{
-//                System.out.println("It's not a king");
-//                return false;
-//            }
-//        }
-//        else{
-//            System.out.println("It's not a check");
-//            return false;
-//        }
-//    }
+    public void clone(Chessboard board) {
+
+    }
 }
