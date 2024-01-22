@@ -131,7 +131,6 @@ public class Chessboard implements Cloneable{
             for (int j = 0; j < 8; j++) {
                 if (board[i][j].getPieceType() && board[i][j].isWhite != white) {
                     if (board[i][j].canMove(kingPosition, board)) {
-                        System.out.println(i + " " + j);
                         return true;
                     }
                 }
@@ -188,20 +187,13 @@ public class Chessboard implements Cloneable{
 
     public boolean isStalemate(boolean white) {
         if(!isCheck(white)){
-            //check if any piece of this player can move
-            for (int i = 0; i < 8; i++) { //checks if there is a piece that can kill the king -> check
+            for (int i = 0; i < 8; i++) { //checks if there is a piece that can move
                 for (int j = 0; j < 8; j++) {
                     if (board[i][j].getPieceType() && board[i][j].isWhite == white) {
-                        for (int k = -1; k < 2; k++) {
-                            for (int l = -1; l < 2; l++) {
-                                if (IsInBoardersOfCB(new int[]{i + k, j + l})) {
-                                    if (!board[i + k][j + l].getPieceType() || board[i + k][j + l].isWhite != white) {
-                                        Chessboard clone = this.clone();
-                                        clone.movePiece(new int[]{i, j}, new int[]{i + k, j + l});
-                                        if (!clone.isCheck(white)) {
-                                            return false;
-                                        }
-                                    }
+                        for (int k = 0; k < 8; k++) {
+                            for (int l = 0; l < 8; l++) {
+                                if (board[i][j].canMove(new int[]{k, l}, board)) {
+                                    return false;
                                 }
                             }
                         }
@@ -209,7 +201,7 @@ public class Chessboard implements Cloneable{
                 }
             }
         }
-        return false;
+        return true;
     }
 
     @Override
