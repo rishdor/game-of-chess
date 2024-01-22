@@ -131,6 +131,7 @@ public class Chessboard implements Cloneable{
             for (int j = 0; j < 8; j++) {
                 if (board[i][j].getPieceType() && board[i][j].isWhite != white) {
                     if (board[i][j].canMove(kingPosition, board)) {
+                        System.out.println(i + " " + j);
                         return true;
                     }
                 }
@@ -149,16 +150,40 @@ public class Chessboard implements Cloneable{
                 }
             }
         }
-        for (int i = kingPosition[0] - 1; i <= kingPosition[0] + 1; i++) { //checks if there is a piece that can kill the king
-            for (int j = kingPosition[1] - 1; j <= kingPosition[1] + 1; j++) {
-                if (IsInBoardersOfCB(new int[]{i, j}) && board[i][j].getPieceType() && board[i][j].isWhite != white) {
-                    if (board[i][j].canMove(kingPosition, board)) {
-                        return false;
+        if(isCheck(white)){
+            for (int i = 0; i < 8; i++) { //checks if there is a piece that can kill the king -> check
+                for (int j = 0; j < 8; j++) {
+                    if (board[i][j].getPieceType() && board[i][j].isWhite != white) {
+                        if (board[i][j].canMove(kingPosition, board)) {
+                            //check if king can move
+                            for (int k = -1; k < 2; k++) {
+                                for (int l = -1; l < 2; l++) {
+                                    if (IsInBoardersOfCB(new int[]{kingPosition[0] + k, kingPosition[1] + l})) {
+                                        if (!board[kingPosition[0] + k][kingPosition[1] + l].getPieceType() || board[kingPosition[0] + k][kingPosition[1] + l].isWhite != white) {
+                                            Chessboard clone = this.clone();
+                                            clone.movePiece(kingPosition, new int[]{kingPosition[0] + k, kingPosition[1] + l});
+                                            if (!clone.isCheck(white)) {
+                                                //check if any piece can block the check
+                                                for (int m = 0; m < 8; m++) {
+                                                    for (int n = 0; n < 8; n++) {
+                                                        if (board[m][n].getPieceType() && board[m][n].isWhite == white) {
+                                                            if (board[m][n].canMove(kingPosition, board)) {
+                                                                return false;
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
         }
-        return true;
+        return false;
     }
 
     public boolean isStalemate(boolean white) {
@@ -175,16 +200,16 @@ public class Chessboard implements Cloneable{
             for (int j = 0; j < 8; j++) {
                 if (board[i][j].getPieceType() && board[i][j].isWhite != white) {
                     if (board[i][j].canMove(kingPosition, board)) {
-                        return false;
+                        return true;
                     }
                 }
             }
         }
-        return true;
+        return false;
     }
 
     @Override
-    public Chessboard clone() {
+    public Chessboard clone() { //used in checks
         try {
             Chessboard clone = (Chessboard) super.clone();
             clone.board = new Piece[8][8];
