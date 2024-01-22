@@ -99,12 +99,10 @@ class GameFlow {
                     System.out.println("Checkmate. " + currentPlayer.getName() + " wins!");
                     break;
                 }
-                /*
                 else if (board.isStalemate(currentPlayer.isWhite())) {
                     System.out.println("Stalemate.");
                     break;
                 }
-                */
                 else if(board.isCheck(currentPlayer.isWhite())) {//check if current move removed check
                     //"undo" the move -> revert the board
                     board = checkBoard.clone();
@@ -112,7 +110,9 @@ class GameFlow {
                     continue;
                 }
                 else{
+                    System.out.println("Move accepted.");
                     checkCounter = 0;
+                    System.out.println("inside " + checkCounter);
                 }
 
                 currentPlayer = (currentPlayer == whitePlayer) ? blackPlayer : whitePlayer;
@@ -142,14 +142,29 @@ class GameFlow {
             return true;
         }
         else if (board.isCheck(currentPlayer.isWhite())) {
-            if (checkCounter == 0){
+            System.out.println("check " + checkCounter);
+            if (checkCounter == 0) {
+                System.out.println("check in if " + checkCounter);
                 checkBoard = board.clone();
+                checkBoard.PrintChessBoard();
             }
             System.out.println("Check.");
             checkCounter++;
+            System.out.println("outside " + checkCounter);
             return false;
-        }else
+        }
+        else if (board.isCheckmate(currentPlayer.isWhite())) {
+            System.out.println("Checkmate.");
+            return true;
+        }
+        else if (board.isStalemate(currentPlayer.isWhite())) {
+            System.out.println("Stalemate.");
+            return true;
+        }
+        else {
+            checkCounter = 0;
             return false;
+        }
     }
 }
 
