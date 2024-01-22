@@ -49,13 +49,10 @@ class GameFlow {
                 int[] destination = move.getDestination();
 
                 if (piece.getPieceType() && piece.isWhite == currentPlayer.isWhite() && piece.canMove(destination, board.getBoard())) {
-                    if (board.getPiece(destination).getPieceType() && !board.getPiece(destination).getName().equals("K") ) { //check if there is a piece on the destination and sets capture to true
+                    if (board.getPiece(destination).getPieceType()) { //check if there is a piece on the destination and sets capture to true
                         board.getPiece(destination).setKilled(true);
                         move.setCapture(true);
                         board.movePiece(source, destination);
-                    } else if (board.getPiece(destination).getName().equals("K")) {
-                        System.out.println("You can't capture the king. Try again.");
-                        continue;
                     } else if (piece.getName().equals("P") && (destination[0] == 0 || destination[0] == 7)) { //check if it's a pawn promotion
                         move.setPromotion(true);
                         Scanner scanner = new Scanner(System.in);
@@ -98,9 +95,19 @@ class GameFlow {
                     continue;
                 }
 
-                if(board.isCheck(currentPlayer.isWhite())) {//check if current move removed check
+                if (board.isCheckmate(currentPlayer.isWhite())) {
+                    System.out.println("Checkmate. " + currentPlayer.getName() + " wins!");
+                    break;
+                }
+                /*
+                else if (board.isStalemate(currentPlayer.isWhite())) {
+                    System.out.println("Stalemate.");
+                    break;
+                }
+                */
+                else if(board.isCheck(currentPlayer.isWhite())) {//check if current move removed check
                     //"undo" the move -> revert the board
-                    board = (Chessboard) checkBoard.clone();
+                    board = checkBoard.clone();
                     System.out.println("Check remains. Try again.");
                     continue;
                 }
@@ -136,24 +143,11 @@ class GameFlow {
         }
         else if (board.isCheck(currentPlayer.isWhite())) {
             if (checkCounter == 0){
-                checkBoard = (Chessboard) board.clone();
+                checkBoard = board.clone();
             }
             System.out.println("Check.");
             checkCounter++;
             return false;
-
-            /*
-        }
-
-        else if (board.isCheckmate(currentPlayer.isWhite())) {
-            System.out.println("Checkmate. " + currentPlayer.getName() + " wins!");
-            return true;
-            */
-            /*
-        } else if (board.isStalemate(currentPlayer.isWhite())) {
-            System.out.println("Stalemate.");
-            return true;
-*/
         }else
             return false;
     }
