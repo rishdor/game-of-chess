@@ -51,7 +51,7 @@ public class Move extends Command {
     public static int[] convertNotationToCoordinate(String input) {
         int[] coordinate = new int[2];
         coordinate[1] = input.toLowerCase().charAt(0) - 'a';
-        coordinate[0] = Character.getNumericValue(input.charAt(1)) - 1;
+        coordinate[0] = 8 - Character.getNumericValue(input.charAt(1));
         return coordinate;
     }
 
