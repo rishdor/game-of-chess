@@ -1,8 +1,27 @@
+/**
+ * The Queen class extends the Piece class and represents a queen in a game of chess.
+ */
 class Queen extends Piece{
+    // The name of the piece
     final protected String name = "Q";
+
+    /**
+     * The constructor for the Queen class.
+     *
+     * @param position An integer array representing the current position of the piece on the board.
+     * @param isWhite A boolean indicating the color of the piece. If true, the piece is white; if false, the piece is black.
+     */
     public Queen(int[] position, boolean isWhite) {
         super(position, isWhite, isWhite ? '♕' : '♛');
     }
+
+    /**
+     * Checks if the queen can move to a given destination.
+     *
+     * @param destination An integer array representing the destination coordinates.
+     * @param board A 2D array of Piece objects representing the current state of the board.
+     * @return A boolean indicating whether the move is valid.
+     */
     @Override
     public boolean canMove(int[] destination, Piece[][] board) {
         boolean status = false;
@@ -13,6 +32,14 @@ class Queen extends Piece{
         }
         return status;
     }
+
+    /**
+     * Checks if the path to the destination is clear (i.e., no pieces are in the way).
+     *
+     * @param dest An integer array representing the destination coordinates.
+     * @param board A 2D array of Piece objects representing the current state of the board.
+     * @return A boolean indicating whether the path is clear.
+     */
     public boolean isPathClear(int[] dest, Piece[][] board) {
         int x = position[0];
         int y = position[1];
@@ -64,10 +91,22 @@ class Queen extends Piece{
         }
         return true;
     }
+
+    /**
+     * Returns the type of the piece.
+     *
+     * @return A boolean indicating the type of the piece. For the Queen class, this method always returns true.
+     */
     @Override
     public boolean getPieceType() {
         return true;
     }
+
+    /**
+     * Returns the name of the piece.
+     *
+     * @return A string representing the name of the piece.
+     */
     @Override
     public String getName() {
         return name;
