@@ -4,7 +4,8 @@ import java.util.*;
 public class Chessboard implements Cloneable{
     public Piece[][] board;
 
-    private Map<String, List<int[]>> piecePositions = new HashMap<>();
+    private List<int[]> whitePiecePositions = new ArrayList<>();
+    private List<int[]> blackPiecePositions = new ArrayList<>();
     public Chessboard() {
         board = new Piece[8][8];
     }
@@ -19,6 +20,10 @@ public class Chessboard implements Cloneable{
         board[source[0]][source[1]] = new EmptyPiece(source);
         board[destination[0]][destination[1]] = piece;
         piece.hasMoved = true;
+
+        List<int[]> pieceList = piece.isWhite ? whitePiecePositions : blackPiecePositions;
+        pieceList.remove(source);
+        pieceList.add(destination);
     }
 
     public void createNewPiece(char name, boolean isWhite, int[] position) {
@@ -183,8 +188,17 @@ public class Chessboard implements Cloneable{
 */
 
     public boolean isCheckmate(boolean white) {
-        int[] kingPosition = piecePositions.get(white ? "WhiteKing" : "BlackKing").get(0);
-        List<int[]> opponentPieces = piecePositions.get(white ? "BlackPieces" : "WhitePieces");
+        int[] kingPosition = null;
+        List<int[]> ownPieces = white ? whitePiecePositions : blackPiecePositions;
+        List<int[]> opponentPieces = white ? blackPiecePositions : whitePiecePositions;
+
+        for (int[] position : ownPieces) {
+            Piece piece = board[position[0]][position[1]];
+            if (piece.getName().equals("K")) {
+                kingPosition = position;
+                break;
+            }
+        }
 
         if (isCheck(white)) {
             for (int[] position : opponentPieces) {
@@ -197,7 +211,7 @@ public class Chessboard implements Cloneable{
                                 Chessboard clone = this.clone();
                                 clone.movePiece(kingPosition, newKingPosition);
                                 if (!clone.isCheck(white)) {
-                                    return false;
+                                    return true;
                                 }
                             }
                         }
@@ -205,8 +219,9 @@ public class Chessboard implements Cloneable{
                 }
             }
         }
-        return true;
+        return false;
     }
+
     public boolean isStalemate(boolean white) {
         if(!isCheck(white)){
             for (int i = 0; i < 8; i++) { //checks if there is a piece that can move
