@@ -13,9 +13,12 @@ public class Main {
         String name1 = scanner.nextLine();
         System.out.print("Give the name of the second player (b): ");
         String name2 = scanner.nextLine();
+        // Create the players
         Player player1 = new Player(name1, 'w');
         Player player2 = new Player(name2, 'b');
+        // Create the game
         GameFlow game = new GameFlow(player1, player2, new Chessboard());
+        // Start the game
         game.start();
     }
 }
