@@ -1,8 +1,10 @@
 import java.util.Objects;
+import java.util.*;
 
 public class Chessboard implements Cloneable{
     public Piece[][] board;
 
+    private Map<String, List<int[]>> piecePositions = new HashMap<>();
     public Chessboard() {
         board = new Piece[8][8];
     }
@@ -131,6 +133,7 @@ public class Chessboard implements Cloneable{
             for (int j = 0; j < 8; j++) {
                 if (board[i][j].getPieceType() && board[i][j].isWhite != white) {
                     if (board[i][j].canMove(kingPosition, board)) {
+                        System.out.println("King " + kingPosition[0] + " " + kingPosition[1]);
                         System.out.println("Check at: [" + i + "] [" + j + "] by " + board[i][j].getName());
                         return true;
                     }
@@ -139,7 +142,7 @@ public class Chessboard implements Cloneable{
         }
         return false;
     }
-
+/*
     public boolean isCheckmate(boolean white){
         int[] kingPosition = new int[2];
         for (int i = 0; i < 8; i++) { //finds the king
@@ -151,28 +154,20 @@ public class Chessboard implements Cloneable{
             }
         }
         if(isCheck(white)){
-            for (int i = 0; i < 8; i++) { //checks if there is a piece that can kill the king -> check
-                for (int j = 0; j < 8; j++) {
-                    if (board[i][j].getPieceType() && board[i][j].isWhite != white) {
-                        if (board[i][j].canMove(kingPosition, board)) {
-                            //check if king can move
-                            for (int k = -1; k < 2; k++) {
-                                for (int l = -1; l < 2; l++) {
-                                    if (IsInBoardersOfCB(new int[]{kingPosition[0] + k, kingPosition[1] + l})) {
-                                        if (!board[kingPosition[0] + k][kingPosition[1] + l].getPieceType() || board[kingPosition[0] + k][kingPosition[1] + l].isWhite != white) {
-                                            Chessboard clone = this.clone();
-                                            clone.movePiece(kingPosition, new int[]{kingPosition[0] + k, kingPosition[1] + l});
-                                            if (!clone.isCheck(white)) {
-                                                //check if any piece can block the check
-                                                for (int m = 0; m < 8; m++) {
-                                                    for (int n = 0; n < 8; n++) {
-                                                        if (board[m][n].getPieceType() && board[m][n].isWhite == white) {
-                                                            if (board[m][n].canMove(kingPosition, board)) {
-                                                                return true;
-                                                            }
-                                                        }
-                                                    }
-                                                }
+            //check if king can move
+            for (int k = -1; k < 2; k++) {
+                for (int l = -1; l < 2; l++) {
+                    if (IsInBoardersOfCB(new int[]{kingPosition[0] + k, kingPosition[1] + l})) {
+                        if (!board[kingPosition[0] + k][kingPosition[1] + l].getPieceType() || board[kingPosition[0] + k][kingPosition[1] + l].isWhite != white) {
+                            Chessboard clone = this.clone();
+                            clone.movePiece(kingPosition, new int[]{kingPosition[0] + k, kingPosition[1] + l});
+                            if (!clone.isCheck(white)) {
+                                //check if any piece can block the check
+                                for (int m = 0; m < 8; m++) {
+                                    for (int n = 0; n < 8; n++) {
+                                        if (board[m][n].getPieceType() && board[m][n].isWhite == white) {
+                                            if (board[m][n].canMove(kingPosition, board)) {
+                                                return true;
                                             }
                                         }
                                     }
@@ -185,7 +180,33 @@ public class Chessboard implements Cloneable{
         }
         return false;
     }
+*/
 
+    public boolean isCheckmate(boolean white) {
+        int[] kingPosition = piecePositions.get(white ? "WhiteKing" : "BlackKing").get(0);
+        List<int[]> opponentPieces = piecePositions.get(white ? "BlackPieces" : "WhitePieces");
+
+        if (isCheck(white)) {
+            for (int[] position : opponentPieces) {
+                Piece piece = board[position[0]][position[1]];
+                if (piece.canMove(kingPosition, board)) {
+                    for (int dx = -1; dx <= 1; dx++) {
+                        for (int dy = -1; dy <= 1; dy++) {
+                            int[] newKingPosition = new int[]{kingPosition[0] + dx, kingPosition[1] + dy};
+                            if (IsInBoardersOfCB(newKingPosition) && (!board[newKingPosition[0]][newKingPosition[1]].getPieceType() || board[newKingPosition[0]][newKingPosition[1]].isWhite != white)) {
+                                Chessboard clone = this.clone();
+                                clone.movePiece(kingPosition, newKingPosition);
+                                if (!clone.isCheck(white)) {
+                                    return false;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return true;
+    }
     public boolean isStalemate(boolean white) {
         if(!isCheck(white)){
             for (int i = 0; i < 8; i++) { //checks if there is a piece that can move
