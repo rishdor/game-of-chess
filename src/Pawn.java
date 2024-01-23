@@ -73,7 +73,7 @@ public class Pawn extends Piece{
                     return !board[destination[0]][destination[1]].getPieceType();
                 }
                 // Check if the pawn is capturing a piece diagonally
-                else if (Math.abs(position[1] - destination[1]) == 1) {
+                else if (Math.abs(position[1] - destination[1]) == 1 && Math.abs(position[0] - destination[0]) == 1) {
                     // Check if the destination square contains an opponent's piece
                     return board[destination[0]][destination[1]].getPieceType() && !board[destination[0]][destination[1]].isWhite;
                 }
@@ -94,7 +94,7 @@ public class Pawn extends Piece{
             } else {
                 if (destination[0] - position[0] == 1 && position[1] == destination[1]) {
                     return !board[destination[0]][destination[1]].getPieceType();
-                } else if (Math.abs(position[1] - destination[1]) == 1) {
+                } else if (Math.abs(position[1] - destination[1]) == 1 && Math.abs(position[0] - destination[0]) == 1) {
                     return board[destination[0]][destination[1]].getPieceType() && board[destination[0]][destination[1]].isWhite;
                 }
             }

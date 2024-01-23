@@ -1,13 +1,15 @@
 public class Move extends Command {
     private final Piece piece;
     private final String move;
-    private int[] source;
-    private int[] destination;
+    private final int[] source;
+    private final int[] destination;
     private boolean capture;
     private boolean check;
     private boolean checkmate;
     private boolean promotion;
     private char promotionPiece;
+    private boolean castling;
+    private boolean draw;
 
     public Move(String move, Chessboard board) {
         this.move = move;
@@ -19,22 +21,20 @@ public class Move extends Command {
     public void setCapture(boolean capture) {
         this.capture = capture;
     }
-
     public void setCheck(boolean check) {
         this.check = check;
     }
-
     public void setCheckmate(boolean checkmate) {
         this.checkmate = checkmate;
     }
-
     public void setPromotion(boolean promotion) {
         this.promotion = promotion;
     }
-
     public void setPromotionPiece(char promotionPiece) {
         this.promotionPiece = promotionPiece;
     }
+    public void setIfCastling(boolean castling) { this.castling = castling; }
+    public void setIsDrawOffered(boolean draw) { this.draw = draw; }
 
     public Piece getPiece() {
         return piece;
@@ -48,30 +48,10 @@ public class Move extends Command {
         return destination;
     }
 
-    public boolean isCapture() {
-        return capture;
-    }
-
-    public boolean isCheck() {
-        return check;
-    }
-
-    public boolean isCheckmate() {
-        return checkmate;
-    }
-
-    public boolean isPromotion() {
-        return promotion;
-    }
-
-    public char getPromotionPiece() {
-        return promotionPiece;
-    }
-
     public static int[] convertNotationToCoordinate(String input) {
         int[] coordinate = new int[2];
         coordinate[1] = input.toLowerCase().charAt(0) - 'a';
-        coordinate[0] = Character.getNumericValue(input.charAt(1)) - 1;
+        coordinate[0] = 8 - Character.getNumericValue(input.charAt(1));
         return coordinate;
     }
 
@@ -101,8 +81,15 @@ public class Move extends Command {
         if (checkmate) {
             to += "#";
         }
+        if (castling) {
+            to = destination[1] > source[1] ? "O-O" : "O-O-O";
+        }
+        if (draw) {
+            to += "(=)";
+        }
         return pieceType + to.toLowerCase();
     }
+
 
     @Override
     public boolean endTheGame() {
