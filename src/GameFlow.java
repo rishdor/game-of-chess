@@ -155,7 +155,6 @@ class GameFlow {
                 }
 
                 currentPlayer = (currentPlayer == whitePlayer) ? blackPlayer : whitePlayer;
-                previousMove = (Move)command;
 
                 if (!isWhiteTurn) {
                     String algebraicMove = countMoves + 1 + ". "+ previousMove.convertToAlgebraic() + " " + move.convertToAlgebraic();
