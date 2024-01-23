@@ -187,6 +187,7 @@ class GameFlow {
                 currentPlayer = (currentPlayer == whitePlayer) ? blackPlayer : whitePlayer;
 
                 // If it's not white's turn, record the move in algebraic notation and increment the move counter
+       
                 if (!isWhiteTurn) {
                     String algebraicMove = countMoves + 1 + ". "+ previousMove.convertToAlgebraic() + " " + move.convertToAlgebraic();
                     moves.add(algebraicMove);
@@ -263,7 +264,6 @@ class GameFlow {
         else
             return false;
     }
-
     /**
      * Saves the game to a file.
      */
