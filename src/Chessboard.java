@@ -210,7 +210,6 @@ public class Chessboard implements Cloneable{
         }
         return true;
     }
-
     @Override
     public Chessboard clone() { //used in checks
         try {
