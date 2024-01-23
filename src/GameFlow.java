@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 class GameFlow {
     public Chessboard board;
     public Chessboard checkBoard; //loaded when move did not remove check
+    public Chessboard yourBoard; //loaded when you're back in check
     public Player whitePlayer;
     public Player blackPlayer;
     public Player currentPlayer;
@@ -18,6 +19,7 @@ class GameFlow {
         this.blackPlayer = blackPlayer;
         this.board = board;
         this.checkBoard = board;
+        this.yourBoard = board;
         this.checkCounter = 0;
 //        this.gameRecord = "";
     }
@@ -45,6 +47,13 @@ class GameFlow {
         this.board = cBoard;
     }
 
+    public Chessboard getYourBoard() {
+        return yourBoard;
+    }
+
+    public void setYourBoard(Chessboard oBoard) {
+        this.yourBoard = oBoard;
+    }
 
     Command command;
     Command previousCommand;
@@ -52,6 +61,7 @@ class GameFlow {
     public void start() {
         board.FillInChessBoard();
         checkBoard.FillInChessBoard();
+        yourBoard.FillInChessBoard();
         currentPlayer = whitePlayer;
         countMoves = 0;
         command = null;
@@ -71,6 +81,8 @@ class GameFlow {
                 Piece piece = move.getPiece();
                 int[] source = move.getSource();
                 int[] destination = move.getDestination();
+
+                setYourBoard(board.clone());
 
                 if (piece.getPieceType() && piece.isWhite == currentPlayer.isWhite() && piece.canMove(destination, board.getBoard())) {
                     if (board.getPiece(destination).getPieceType()) { //check if there is a piece on the destination and sets capture to true
@@ -123,18 +135,19 @@ class GameFlow {
                     System.out.println("Checkmate. " + currentPlayer.getName() + " wins!");
                     break;
                 }
+                else if (board.isCheck(currentPlayer.isWhite()) && getCheckCount()==0) {
+                    setCBoard(getYourBoard().clone());
+                    System.out.println("Check remains. Try again.");
+                    continue;
+                }
                 else if(board.isCheck(currentPlayer.isWhite()) && getCheckCount()>0) {//check if current move removed check
                     //"undo" the move -> revert the board
                     setCBoard(getCheckBoard().clone());
                     System.out.println("Check remains. Try again.");
-                    System.out.println("check try again " + getCheckCount());
                     continue;
                 }
                 else if (getCheckCount() > 0) {
-                    System.out.println("check inside before 0 " + getCheckCount());
-                    System.out.println("Check removed.");
                     setCheckCount(0);
-                    System.out.println("check inside after 0 " + getCheckCount());
                 }
 
                 currentPlayer = (currentPlayer == whitePlayer) ? blackPlayer : whitePlayer;
@@ -163,30 +176,24 @@ class GameFlow {
         else if(command instanceof QuitCommand || command instanceof DrawCommand || command instanceof RestartCommand) {
             return true;
         }
-        else if (board.isCheck(currentPlayer.isWhite())) {
-            System.out.println("check before if " + getCheckCount());
-            if (getCheckCount() == 0) {
-                System.out.println("check in if " + getCheckCount());
-                setCheckBoard(getCBoard().clone());
-                checkBoard.PrintChessBoard();
-            }
-            System.out.println("Check.");
-            setCheckCount(getCheckCount() + 1);
-            System.out.println("check after if " + getCheckCount());
-            return false;
-        }
         else if (board.isCheckmate(currentPlayer.isWhite())) {
             System.out.println("Checkmate.");
             return true;
+        }
+        else if (board.isCheck(currentPlayer.isWhite())) {
+            if (getCheckCount() == 0) {
+                setCheckBoard(getCBoard().clone());
+            }
+            System.out.println("Check.");
+            setCheckCount(getCheckCount() + 1);
+            return false;
         }
         else if (board.isStalemate(currentPlayer.isWhite())) {
             System.out.println("Stalemate.");
             return true;
         }
-        else {
-            System.out.println("check outside else " + getCheckCount());
+        else
             return false;
-        }
     }
 }
 

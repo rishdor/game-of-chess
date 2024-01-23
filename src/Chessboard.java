@@ -131,6 +131,7 @@ public class Chessboard implements Cloneable{
             for (int j = 0; j < 8; j++) {
                 if (board[i][j].getPieceType() && board[i][j].isWhite != white) {
                     if (board[i][j].canMove(kingPosition, board)) {
+                        System.out.println("Check at: [" + i + "] [" + j + "] by " + board[i][j].getName());
                         return true;
                     }
                 }
