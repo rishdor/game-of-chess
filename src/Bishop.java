@@ -5,11 +5,15 @@ public class Bishop extends Piece{
     }
     @Override
     public boolean canMove(int[] destination, Piece[][] board) {
+        // Check if the move is along a diagonal (absolute difference between x-coordinates equals absolute difference between y-coordinates)
         if(Math.abs(position[0] - destination[0]) == Math.abs(position[1] - destination[1])){
+            // Check if the path to the destination is clear (no pieces in the way)
             if(isPathClear(destination, board)){
+                // If the destination square is empty or contains an opponent's piece, return true
                 return !board[destination[0]][destination[1]].getPieceType() || board[destination[0]][destination[1]].isWhite != this.isWhite;
             }
         }
+// If the move is not along a diagonal or the path is not clear, return false
         return false;
     }
     public boolean isPathClear(int[] dest, Piece[][] board) {

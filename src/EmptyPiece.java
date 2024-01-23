@@ -1,3 +1,4 @@
+// Empty piece class, used to represent empty squares on the board.
 class EmptyPiece extends Piece {
     final protected String name = "E";
     public EmptyPiece(int[] position) {
