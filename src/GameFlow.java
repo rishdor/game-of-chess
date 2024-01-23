@@ -176,6 +176,7 @@ class GameFlow {
             return true;
         }
         else if (board.isCheckmate(currentPlayer.isWhite())) {
+            getCBoard().PrintChessBoard();
             System.out.println("Checkmate.");
             return true;
         }

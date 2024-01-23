@@ -124,16 +124,20 @@ public class Chessboard implements Cloneable{
         return position[0] >= 0 && position[0] <= 8 - 1 && position[1] >= 0 && position[1] <= 8 - 1;
     }
 
-    public boolean isCheck(boolean white) {
-        int[] kingPosition = new int[2];
-        for (int i = 0; i < 8; i++) { //finds the king
+    public int[] findKingPosition(boolean isWhite) {
+        for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                if (board[i][j].getName().equals("K") && board[i][j].isWhite == white) {
-                    kingPosition[0] = i;
-                    kingPosition[1] = j;
+                Piece piece = board[i][j];
+                if (piece.getPieceType() && piece.getName().equals("K") && piece.isWhite == isWhite) {
+                    return new int[]{i, j};
                 }
             }
         }
+        return null;
+    }
+
+    public boolean isCheck(boolean white) {
+        int[] kingPosition = findKingPosition(white);
         for (int i = 0; i < 8; i++) { //checks if there is a piece that can kill the king
             for (int j = 0; j < 8; j++) {
                 if (board[i][j].getPieceType() && board[i][j].isWhite != white) {
@@ -188,18 +192,22 @@ public class Chessboard implements Cloneable{
 */
 
     public boolean isCheckmate(boolean white) {
-        int[] kingPosition = null;
-        List<int[]> ownPieces = white ? whitePiecePositions : blackPiecePositions;
-        List<int[]> opponentPieces = white ? blackPiecePositions : whitePiecePositions;
+        int[] kingPosition = findKingPosition(white);
+        List<int[]> ownPieces = new ArrayList<>();
+        List<int[]> opponentPieces = new ArrayList<>();
 
-        for (int[] position : ownPieces) {
-            Piece piece = board[position[0]][position[1]];
-            if (piece.getName().equals("K")) {
-                kingPosition = position;
-                break;
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                Piece piece = board[i][j];
+                if (piece.getPieceType()) {
+                    if (piece.isWhite == white) {
+                        ownPieces.add(new int[]{i, j});
+                    } else {
+                        opponentPieces.add(new int[]{i, j});
+                    }
+                }
             }
         }
-
         if (isCheck(white)) {
             for (int[] position : opponentPieces) {
                 Piece piece = board[position[0]][position[1]];
@@ -211,8 +219,9 @@ public class Chessboard implements Cloneable{
                                 Chessboard clone = this.clone();
                                 clone.movePiece(kingPosition, newKingPosition);
                                 if (!clone.isCheck(white)) {
-                                    return true;
+                                    return false;
                                 }
+                                return true;
                             }
                         }
                     }
