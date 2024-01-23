@@ -17,7 +17,6 @@ public class Move extends Command {
         this.destination = convertNotationToCoordinate(move.split(" ")[1]);
         this.piece = board.getPiece(source);
     }
-
     public void setCapture(boolean capture) {
         this.capture = capture;
     }
@@ -39,29 +38,23 @@ public class Move extends Command {
     public Piece getPiece() {
         return piece;
     }
-
     public int[] getSource() {
         return source;
     }
-
     public int[] getDestination() {
         return destination;
     }
-
     public static int[] convertNotationToCoordinate(String input) {
         int[] coordinate = new int[2];
         coordinate[1] = input.toLowerCase().charAt(0) - 'a';
         coordinate[0] = 8 - Character.getNumericValue(input.charAt(1));
         return coordinate;
     }
-
     public String convertToAlgebraic() {
         String[] parts = move.split(" ");
         String from = parts[0];
         String to = parts[1];
-
         String pieceType = piece.getName();
-
         if (pieceType.equals("P")) {
             pieceType = "";
         }
