@@ -1,19 +1,38 @@
 import java.util.Objects;
 import java.util.*;
-
+/**
+ * The `Chessboard` class represents the chessboard and handles various chess-related operations.
+ */
 public class Chessboard implements Cloneable{
+    // 2D array to represent the chessboard
     public Piece[][] board;
-
+    // Lists to track positions of white and black pieces separately
     private List<int[]> whitePiecePositions = new ArrayList<>();
     private List<int[]> blackPiecePositions = new ArrayList<>();
+
+    /**
+     * Constructor to initialize the chessboard.
+     */
     public Chessboard() {
         board = new Piece[8][8];
     }
 
+    /**
+     * Retrieves the piece at a given position on the chessboard.
+     *
+     * @param position The position to retrieve the piece from.
+     * @return The piece at the specified position.
+     */
     public Piece getPiece(int[] position) {
         return board[position[0]][position[1]];
     }
 
+    /**
+     * Moves a piece from the source position to the destination position on the chessboard.
+     *
+     * @param source      The source position of the piece.
+     * @param destination The destination position for the piece.
+     */
     public void movePiece(int[] source, int[] destination) {
         Piece piece = board[source[0]][source[1]];
         piece.position = destination;
@@ -21,12 +40,21 @@ public class Chessboard implements Cloneable{
         board[destination[0]][destination[1]] = piece;
         piece.hasMoved = true;
 
+        // Update piece positions in the respective lists
         List<int[]> pieceList = piece.isWhite ? whitePiecePositions : blackPiecePositions;
         pieceList.remove(source);
         pieceList.add(destination);
     }
 
+    /**
+     * Creates a new piece on the chessboard based on the provided parameters.
+     *
+     * @param name     The name of the piece ('R', 'N', 'B', 'Q', or default).
+     * @param isWhite  A boolean indicating whether the piece is white or black.
+     * @param position The position to place the new piece.
+     */
     public void createNewPiece(char name, boolean isWhite, int[] position) {
+        // Create a new piece based on the provided parameters
         switch (name) {
             case 'R', 'r':
                 board[position[0]][position[1]] = new Rook(position, isWhite);
@@ -46,6 +74,12 @@ public class Chessboard implements Cloneable{
         }
     }
 
+    /**
+     * Performs castling operation on the chessboard.
+     *
+     * @param source      The source position of the king.
+     * @param destination The destination position for the king.
+     */
     public void castle(int[] source, int[] destination) {
         Piece king = board[source[0]][source[1]];
         Piece rook = board[destination[0]][destination[1]];
@@ -59,6 +93,13 @@ public class Chessboard implements Cloneable{
         rook.hasMoved = true;
     }
 
+    /**
+     * Performs en passant move on the chessboard.
+     *
+     * @param source       The source position of the pawn.
+     * @param destination  The destination position for the pawn.
+     * @param pawn2Position The position of the second pawn involved in en passant.
+     */
     public void enPassant(int[] source, int[] destination, int[] pawn2Position) {
         Piece pawn = board[source[0]][source[1]];
         pawn.position = destination;
@@ -67,10 +108,18 @@ public class Chessboard implements Cloneable{
         board[pawn2Position[0]][pawn2Position[1]] = new EmptyPiece(source);
     }
 
+    /**
+     * Retrieves the current state of the chessboard.
+     *
+     * @return A 2D array representing the current state of the chessboard.
+     */
     public Piece[][] getBoard() {
         return this.board;
     }
 
+    /**
+     * Fills the initial chessboard with pieces.
+     */
     public void FillInChessBoard() {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
@@ -101,6 +150,9 @@ public class Chessboard implements Cloneable{
         }
     }
 
+    /**
+     * Prints the current state of the chessboard.
+     */
     public void PrintChessBoard() {
         System.out.print("  ");
         for (int i = 0; i < 8; i++) {   //makes the letters above the chess board
@@ -120,10 +172,22 @@ public class Chessboard implements Cloneable{
         }
     }
 
+    /**
+     * Checks if a given position is within the boundaries of the chessboard.
+     *
+     * @param position The position to check.
+     * @return A boolean indicating whether the position is within the chessboard boundaries.
+     */
     public boolean IsInBoardersOfCB(int[] position) {
         return position[0] >= 0 && position[0] <= 8 - 1 && position[1] >= 0 && position[1] <= 8 - 1;
     }
 
+    /**
+     * Finds the position of the king on the chessboard.
+     *
+     * @param isWhite A boolean indicating whether to find the white or black king.
+     * @return The position of the king.
+     */
     public int[] findKingPosition(boolean isWhite) {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
@@ -136,14 +200,18 @@ public class Chessboard implements Cloneable{
         return null;
     }
 
+    /**
+     * Checks if the given side (white or black) is in check.
+     *
+     * @param white A boolean indicating the side to check.
+     * @return A boolean indicating whether the specified side is in check.
+     */
     public boolean isCheck(boolean white) {
         int[] kingPosition = findKingPosition(white);
         for (int i = 0; i < 8; i++) { //checks if there is a piece that can kill the king
             for (int j = 0; j < 8; j++) {
                 if (board[i][j].getPieceType() && board[i][j].isWhite != white) {
                     if (board[i][j].canMove(kingPosition, board)) {
-                        System.out.println("King " + kingPosition[0] + " " + kingPosition[1]);
-                        System.out.println("Check at: [" + i + "] [" + j + "] by " + board[i][j].getName());
                         return true;
                     }
                 }
@@ -152,6 +220,12 @@ public class Chessboard implements Cloneable{
         return false;
     }
 
+    /**
+     * Checks if the given side (white or black) is in checkmate.
+     *
+     * @param white A boolean indicating the side to check.
+     * @return A boolean indicating whether the specified side is in checkmate.
+     */
     public boolean isCheckmate(boolean white) {
         int[] kingPosition = findKingPosition(white);
         List<int[]> ownPieces = new ArrayList<>();
@@ -192,6 +266,12 @@ public class Chessboard implements Cloneable{
         return false;
     }
 
+    /**
+     * Checks if the given side (white or black) is in stalemate.
+     *
+     * @param white A boolean indicating the side to check.
+     * @return A boolean indicating whether the specified side is in stalemate.
+     */
     public boolean isStalemate(boolean white) {
         if(!isCheck(white)){
             for (int i = 0; i < 8; i++) { //checks if there is a piece that can move
@@ -210,6 +290,11 @@ public class Chessboard implements Cloneable{
         }
         return true;
     }
+
+    /**
+     * Clones the current chessboard.
+     * @return A clone of the current chessboard.
+     */
     @Override
     public Chessboard clone() { //used in checks
         try {
