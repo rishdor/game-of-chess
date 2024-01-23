@@ -112,7 +112,7 @@ public class Chessboard implements Cloneable{
         System.out.println();
 
         for (int i = 0; i < 8; i++) {
-            System.out.print(i + 1 + " ");
+            System.out.print(8-i + " ");
             for (int j = 0; j < 8; j++) { //prints what's inside of chess board
                 System.out.print(board[i][j] + " ");
             }
@@ -151,45 +151,6 @@ public class Chessboard implements Cloneable{
         }
         return false;
     }
-/*
-    public boolean isCheckmate(boolean white){
-        int[] kingPosition = new int[2];
-        for (int i = 0; i < 8; i++) { //finds the king
-            for (int j = 0; j < 8; j++) {
-                if (board[i][j].getName().equals("K") && board[i][j].isWhite == white) {
-                    kingPosition[0] = i;
-                    kingPosition[1] = j;
-                }
-            }
-        }
-        if(isCheck(white)){
-            //check if king can move
-            for (int k = -1; k < 2; k++) {
-                for (int l = -1; l < 2; l++) {
-                    if (IsInBoardersOfCB(new int[]{kingPosition[0] + k, kingPosition[1] + l})) {
-                        if (!board[kingPosition[0] + k][kingPosition[1] + l].getPieceType() || board[kingPosition[0] + k][kingPosition[1] + l].isWhite != white) {
-                            Chessboard clone = this.clone();
-                            clone.movePiece(kingPosition, new int[]{kingPosition[0] + k, kingPosition[1] + l});
-                            if (!clone.isCheck(white)) {
-                                //check if any piece can block the check
-                                for (int m = 0; m < 8; m++) {
-                                    for (int n = 0; n < 8; n++) {
-                                        if (board[m][n].getPieceType() && board[m][n].isWhite == white) {
-                                            if (board[m][n].canMove(kingPosition, board)) {
-                                                return true;
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return false;
-    }
-*/
 
     public boolean isCheckmate(boolean white) {
         int[] kingPosition = findKingPosition(white);
